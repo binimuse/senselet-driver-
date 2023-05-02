@@ -8,7 +8,7 @@ import '../../../Services/graphql_conf.dart';
 import '../../../common/widgets/custom_snack_bars.dart';
 import '../../../constants/reusable/reusable.dart';
 import '../data/queryandmutation/signup_mutuation.dart';
-import '../views/otp_screen.dart';
+import '../../signin/views/otp_screen.dart';
 
 class SignupController extends GetxController {
   final GlobalKey<FormState> regFormKey = GlobalKey<FormState>();
@@ -202,7 +202,9 @@ class SignupController extends GetxController {
               'access_token', result.data!["action"]["authorization"]["token"]);
 
           signingUp(false);
-          Get.to(const OtpScreen());
+          Get.to(const OtpScreen(
+            email: '',
+          ));
         } else {
           signingUp(false);
 

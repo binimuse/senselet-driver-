@@ -8,17 +8,24 @@ import '../../../common/widgets/custom_snack_bars.dart';
 import '../../../constants/reusable/reusable.dart';
 import '../../../constants/reusable/shimmer_loading.dart';
 import '../../../routes/app_pages.dart';
+import '../../../utils/constants.dart';
+import '../views/otp_screen.dart';
+import '../data/muation/otp_mutation.dart';
 import '../data/muation/signin_mutation.dart';
 
 class SigninController extends GetxController {
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   late TextEditingController emailController, passwordController;
   final reusableWidget = ReusableWidget();
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+
+  GraphQLConfigurationForauth graphQLConfiguration =
+      GraphQLConfigurationForauth();
   final shimmerLoading = ShimmerLoading();
   var email = "";
   var password = "";
+  var otp = "".obs;
   var signingIn = false.obs;
+  var resendotpstarted = false.obs;
   var cansigningIn = true.obs;
 
   var obscureText = true.obs;
@@ -91,32 +98,98 @@ class SigninController extends GetxController {
     if (email.isNotEmpty && password.isNotEmpty) {
       signingIn(true);
       // print(int.parse(txtAge.text));
-      GraphQLClient _client = graphQLConfiguration.clientToQuery();
+      GraphQLClient client = graphQLConfiguration.clientToQuery();
 
-      QueryResult result = await _client.mutate(
+      QueryResult result = await client.mutate(
         MutationOptions(
           document: gql(SigninQueryMutation.signin),
-          variables: <String, dynamic>{'email': email, 'password': password},
+          variables: <String, dynamic>{'username': email, 'password': password},
         ),
       );
-
+      final prefs = await SharedPreferences.getInstance();
       if (!result.hasException) {
-        print(result.data);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-            'access_token', result.data!["login"]["authorization"]["token"]);
-
-        await prefs.setString(
-            'id', result.data!["login"]["user"]["id"].toString());
-
         signingIn(false);
-        Get.offNamed(Routes.HOME);
+
+        if (result.data!["signin"]["user"]["email_verified"]
+            .toString()
+            .contains("false")) {
+          Get.to(OtpScreen(
+            email: email,
+          ));
+        } else {
+          await prefs.setString(Constants.userAccessTokenKey,
+              result.data!["signin"]["tokens"]["access_token"]);
+
+          await prefs.setString(
+              Constants.userId, result.data!["signin"]["user_id"]);
+
+          Get.toNamed(Routes.MAIN_PAGE);
+        }
       } else {
-        print(result.exception);
         signingIn(false);
-
+        print(result.exception);
         ShowCommonSnackBar.awesomeSnackbarfailure(
             "Error", "Invalid Email or Password", context);
+      }
+    }
+  }
+
+  resendOtp(BuildContext context, String email) async {
+    resendotpstarted(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(ResendOtpMutation.otp),
+        variables: <String, dynamic>{
+          'email': email.toString(),
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      resendotpstarted(false);
+      ShowCommonSnackBar.awesomeSnackbarSucess("Sucess", "OTP resent", context);
+    } else {
+      resendotpstarted(false);
+      print(result.exception);
+      ShowCommonSnackBar.awesomeSnackbarfailure(
+          "Error", "somthing went wrong", context);
+    }
+  }
+
+  void verification(BuildContext context, String email) async {
+    signingIn(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(OtpMutation.otp),
+        variables: <String, dynamic>{
+          'code': otp.value,
+          'email': email.toString(),
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      signingIn(false);
+
+      Get.offAllNamed(Routes.SIGNIN);
+    } else {
+      signingIn(false);
+      print(result.exception);
+
+      for (var element in result.exception!.graphqlErrors) {
+        if (element.message.contains('OTP_HAS_EXPIRED')) {
+          ShowCommonSnackBar.awesomeSnackbarfailure(
+              "Error", "OTP HAS EXPIRED please try again", context);
+        } else {
+          ShowCommonSnackBar.awesomeSnackbarfailure(
+              "Error", "Invalid OTP", context);
+        }
       }
     }
   }
