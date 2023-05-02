@@ -31,27 +31,87 @@ class SignupView extends GetView<SignupController> {
                 padding: EdgeInsets.all(2.h),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ///HEADER TEXT
-                      //    buildHeader(),
-
-                      ///EMAIL/PHONE/PASSWORD INPUTS
-                      buildInputFields(context),
-
-                      SizedBox(
-                        height: 4.h,
-                      ),
+                      //       buildInputFields(context),
 
                       ///SIGN UP AND SIGN IN BUTTONS
-                      buildAccountButtons(context),
+                      //   buildAccountButtons(context),
 
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Attention all drivers! In order to sign up and create an account for our app, you must first visit our office to complete the registration process. Once you have completed the registration process at our office, you will be able to sign in and start using our app."
+                              .tr,
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: const Color(0xff020E1B),
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                       SizedBox(
-                        height: 6.h,
+                        height: 1.h,
+                      ),
+
+                      TextButton(
+                        onPressed: () {},
+                        child: Text.rich(
+                          TextSpan(
+                            text:
+                                'If you have any questions or need assistance, please dont hesitate to contact our help center at ',
+                            style: TextStyle(
+                              color: const Color(0xff757A80),
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: const <InlineSpan>[
+                              TextSpan(
+                                text: '0911545454' + " " + "senselet@gmail.com",
+                                style: TextStyle(
+                                  color: themeColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      TextButton(
+                        onPressed: () {},
+                        child: Text.rich(
+                          TextSpan(
+                            text:
+                                'Thank you for choosing to drive with us, and we look forward to helping you get started on the road! ',
+                            style: TextStyle(
+                              color: const Color(0xff757A80),
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: const <InlineSpan>[],
+                          ),
+                        ),
+                      ),
+
+                      Center(
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text.rich(
+                            TextSpan(
+                              text: 'SENSELET',
+                              style: TextStyle(
+                                color: themeColor,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
 
                       ///GUEST BUTTON
-                      //ad   buildGuestButton(),
+                      //    buildGuestButton(),
 
                       SizedBox(
                         height: 1.h,
