@@ -35,8 +35,7 @@ class SignupView extends GetView<SignupController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       //       buildInputFields(context),
-
-                      ///SIGN UP AND SIGN IN BUTTONS
+                      ///   -SIGN UP AND SIGN IN BUTTONS
                       //   buildAccountButtons(context),
 
                       Padding(
