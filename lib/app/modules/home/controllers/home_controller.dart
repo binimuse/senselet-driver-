@@ -19,6 +19,7 @@ import '../data/Model/constantsmodel.dart';
 import '../data/Model/drivermodel.dart';
 import '../data/Model/vehiclemodel.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
+import '../data/muation&query/order_sub.dart';
 import '../data/muation&query/updatevechle.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
@@ -44,6 +45,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
     getConstats();
+    getordersub();
 
     if (await _checkLocationPermission()) {
       var position = await Geolocator.getCurrentPosition();
@@ -165,6 +167,20 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       hassupdateVehicles(false);
 
       print(result.exception);
+    }
+  }
+
+  OrderSubscription orderSubscription = OrderSubscription();
+  var hasorderfetchedsub = false.obs;
+  late final subscriptionDocument;
+  void getordersub() async {
+    subscriptionDocument = gql(orderSubscription
+        .getOrderSubscription(PreferenceUtils.getString(Constants.vehiclesId)));
+    if (subscriptionDocument != null) {
+     
+      hasorderfetchedsub(true);
+    } else {
+      hasorderfetchedsub(false);
     }
   }
 }

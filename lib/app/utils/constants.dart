@@ -3,6 +3,7 @@
 class Constants {
   static const String userAccessTokenKey = 'access_token';
   static const String userId = 'userId';
+  static const String vehiclesId = 'vehiclesId';
   static const String verifyEmail = 'verifyEmail';
   static const String refreshTokenKey = 'refresh_token';
   static const int laborsPageSize = 10;

@@ -16,10 +16,11 @@ class AccountController extends GetxController {
 
     final acc = await prefs.remove(Constants.userAccessTokenKey);
     final id = await prefs.remove(Constants.userId);
+    final vid = await prefs.remove(Constants.vehiclesId);
     final refreshTokenKey = await prefs.remove('refreshTokenKey');
     final verifyEmail = await prefs.remove(Constants.verifyEmail);
 
-    if (acc && id && refreshTokenKey && verifyEmail) {
+    if (acc && id && refreshTokenKey && verifyEmail && vid) {
       Get.offAllNamed(Routes.SIGNIN);
     }
   }
