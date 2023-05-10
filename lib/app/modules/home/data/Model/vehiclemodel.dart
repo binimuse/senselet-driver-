@@ -1,31 +1,37 @@
 class VehicleModel {
   String plateNumber;
   VehicleType vehicleType;
-  Location location;
+  Location? location;
   String id;
+  bool active;
   dynamic photos;
 
   VehicleModel({
     required this.plateNumber,
     required this.vehicleType,
     required this.id,
-    required this.location,
+    required this.active,
+    this.location,
     this.photos,
   });
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) => VehicleModel(
         plateNumber: json["plate_number"],
         vehicleType: VehicleType.fromJson(json["vehicle_type"]),
-        location: Location.fromJson(json["location"]),
+        location: json["location"] != null
+            ? Location.fromJson(json["location"] ?? "")
+            : null,
         id: json["id"],
+        active: json["active"],
         photos: json["photos"],
       );
 
   Map<String, dynamic> toJson() => {
         "plate_number": plateNumber,
         "vehicle_type": vehicleType.toJson(),
-        "location": location.toJson(),
+        "location": location!.toJson(),
         "id": id,
+        "active": active,
         "photos": photos,
       };
 }

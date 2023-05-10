@@ -28,6 +28,21 @@ class GetConstatsandDriverQuery {
   }
 
 
+  vehicles(where: {credential_id: {_eq: "$id"}}) {
+    active
+    driver_id
+    id
+    location
+    photos
+    plate_number
+    vehicle_type {
+      name
+      kg
+      description
+      id
+    }
+  }
+
 }
 
     """;

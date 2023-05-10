@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:senselet_driver/app/common/widgets/custom_snack_bars.dart';
 
+import '../../../../main.dart';
 import '../../../common/graphql_common_api.dart';
 import '../../../constants/reusable/reusable.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +16,9 @@ import '../../../utils/constants.dart';
 import '../../../utils/sahred_prefrence.dart';
 import '../data/Model/constantsmodel.dart';
 import '../data/Model/drivermodel.dart';
+import '../data/Model/vehiclemodel.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
+import '../data/muation&query/updatevechle.dart';
 
 class HomeController extends GetxController {
   final count = 0.obs;
@@ -23,7 +28,7 @@ class HomeController extends GetxController {
   var latitude = 0.0.obs;
   var longitude = 0.0.obs;
   var mapControllers;
-  var status = false.obs;
+
   var isStatusOn = false.obs;
   final GlobalKey<ScaffoldState> keyforall = GlobalKey<ScaffoldState>();
   final Completer<GoogleMapController> gcontroller = Completer();
@@ -70,6 +75,7 @@ class HomeController extends GetxController {
 
   RxList<ConstantModel> constantModel = List<ConstantModel>.of([]).obs;
   RxList<DriverModel> driverModel = List<DriverModel>.of([]).obs;
+  RxList<VehicleModel> vehicleModel = List<VehicleModel>.of([]).obs;
   GraphQLCommonApi graphQLCommonApi = GraphQLCommonApi();
 
   var startloadingConstat = false.obs;
@@ -91,14 +97,62 @@ class HomeController extends GetxController {
         driverModel.value = (result['credentials'] as List)
             .map((e) => DriverModel.fromJson(e))
             .toList();
-      }
 
-      startloadingConstat(false);
-      hasConstatFeched(true);
+        vehicleModel.value = (result['vehicles'] as List)
+            .map((e) => VehicleModel.fromJson(e))
+            .toList();
+
+        if (vehicleModel.first.active == true) {
+          isStatusOn(true);
+        } else {
+          isStatusOn(false);
+        }
+
+        startloadingConstat(false);
+        hasConstatFeched(true);
+      }
     } on Exception catch (e) {
       print(e);
       hasConstatFeched(false);
       startloadingConstat(false);
+    }
+  }
+
+  //update Vehicles
+  var hassupdateVehicles = false.obs;
+  var startupdateVehicles = false.obs;
+
+  updateVehicles(BuildContext context) async {
+    startupdateVehicles(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(Updatevheclemuatation.updatevheclemuatation),
+        variables: <String, dynamic>{
+          'location': {
+            "type": "Point",
+            "coordinates": [latitude.value, longitude.value]
+          },
+          'credential_id': PreferenceUtils.getString(Constants.userId),
+          'active': vehicleModel.first.active,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      startupdateVehicles(false);
+      hassupdateVehicles(true);
+
+      // Get.to(OrderSuccessView());
+    } else {
+      startupdateVehicles(false);
+      hassupdateVehicles(false);
+
+      ShowCommonSnackBar.awesomeSnackbarfailure(
+          "Error", "something went wrong", context);
+      print(result.exception);
     }
   }
 }

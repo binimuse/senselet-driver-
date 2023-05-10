@@ -28,7 +28,7 @@ class HomeView extends GetView<HomeController> {
                 googlemap(),
                 // tonePrice(context),
                 flotingButoontop(),
-                flotingButoon(),
+                flotingButoon(context),
               ],
             ),
           ),
@@ -212,106 +212,111 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  flotingButoon() {
-    return Positioned(
-      bottom: 20,
-      left: 30,
-      right: 30,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(0, 1),
-                  blurRadius: 6,
-                ),
-              ],
-              borderRadius: BorderRadius.circular(90),
-              gradient: const LinearGradient(
-                colors: [themeColor, themeColorFaded],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-            ),
-            child: FloatingActionButton(
-              heroTag: "phone",
-              isExtended: true,
-              elevation: 0,
-              onPressed: () {
-                _makePhoneCall(controller.constantModel.first.shortCode);
-              },
-              backgroundColor: Colors.transparent,
-              child: const Icon(Icons.call),
-            ),
-          ),
-          Obx(() {
-            return ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 3,
-                backgroundColor:
-                    controller.status.value ? Colors.green : Colors.red,
-              ),
-              onPressed: () async {
-                bool val = !controller.status.value;
-                controller.status.value = val;
-                print(val);
-                if (val == true) {
-                  controller.isStatusOn(true);
-                } else {
-                  controller.isStatusOn(false);
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        controller.status.value ? "ON" : "OFF",
-                        style: TextStyle(fontSize: 20),
+  flotingButoon(BuildContext context) {
+    return Obx(
+      () => controller.hasConstatFeched.isTrue
+          ? Positioned(
+              bottom: 20,
+              left: 30,
+              right: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(0, 1),
+                          blurRadius: 6,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(90),
+                      gradient: const LinearGradient(
+                        colors: [themeColor, themeColorFaded],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
                       ),
                     ),
-                    Transform.scale(
-                      scale: 1.5,
-                      child: Switch(
-                        value: controller.status.value,
-                        activeColor: themeColorFaded,
-                        onChanged: (val) {
-                          controller.status.value = val;
-                          if (val == true) {
-                            controller.isStatusOn(true);
-                          } else {
-                            controller.isStatusOn(false);
-                          }
-                        },
-                      ),
+                    child: FloatingActionButton(
+                      heroTag: "phone",
+                      isExtended: true,
+                      elevation: 0,
+                      onPressed: () {
+                        _makePhoneCall(
+                            controller.constantModel.first.shortCode);
+                      },
+                      backgroundColor: Colors.transparent,
+                      child: const Icon(Icons.call),
                     ),
-                  ],
-                ),
-              ),
-            );
-          })
-        ],
-      ),
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 3,
+                        backgroundColor: controller.vehicleModel.first.active
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                      onPressed: () async {
+                        bool val = !controller.vehicleModel.first.active;
+                        controller.vehicleModel.first.active = val;
+
+                        if (val == true) {
+                          controller.isStatusOn(true);
+                        } else {
+                          controller.isStatusOn(false);
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 5,
+                              spreadRadius: 1,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                controller.vehicleModel.first.active
+                                    ? "ON"
+                                    : "OFF",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            Transform.scale(
+                              scale: 1.5,
+                              child: Switch(
+                                value: controller.isStatusOn.value,
+                                activeColor: themeColorFaded,
+                                onChanged: (val) {
+                                  controller.vehicleModel.first.active = val;
+                                  if (val == true) {
+                                    controller.isStatusOn(true);
+                                  } else {
+                                    controller.isStatusOn(false);
+                                  }
+                                  controller.updateVehicles(context);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                ],
+              ))
+          : SizedBox(),
     );
   }
 
