@@ -3,13 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../../common/widgets/app_language_picker_dialog.dart';
 import '../../../../constants/const.dart';
 import '../../../../routes/app_pages.dart';
-import '../../../../utils/constants.dart';
 import '../../controllers/home_controller.dart';
 
 class NavDrawer extends StatefulWidget {
@@ -194,23 +192,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         icon: FontAwesomeIcons.arrowRightFromBracket,
                         title: "Logout",
                         onTap: () {
-                          Get.dialog(AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            title: const Text(
-                              'Warning, Logging Out',
-                              style: TextStyle(fontSize: 18, color: Colors.red),
-                            ),
-                            content: const Text(
-                                'Are you sure you want to log out ?',
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.black)),
-                            actions: [
-                              cancelButton,
-                              continueButton,
-                            ],
-                          ));
+                          Get.toNamed(Routes.ACCOUNT);
                         }),
                   ],
                 ),
@@ -264,27 +246,4 @@ class _NavDrawerState extends State<NavDrawer> {
       ),
     );
   }
-
-  Widget cancelButton = TextButton(
-      onPressed: () {
-        // Navigator.pop();
-        Get.back();
-      },
-      child: const Text('No', style: TextStyle(color: SOFT_BLUE)));
-
-  Widget continueButton = TextButton(
-      onPressed: () async {
-        final prefs = await SharedPreferences.getInstance();
-
-        final acc = await prefs.remove(Constants.userAccessTokenKey);
-        final id = await prefs.remove(Constants.userId);
-        final refreshTokenKey = await prefs.remove('refreshTokenKey');
-        final verifyEmail = await prefs.remove(Constants.verifyEmail);
-
-        if (acc && id && refreshTokenKey && verifyEmail) {
-          Get.offAllNamed(Routes.SIGNIN);
-        }
-        // Navigator.pop(context);
-      },
-      child: const Text('Yes', style: TextStyle(color: SOFT_BLUE)));
 }

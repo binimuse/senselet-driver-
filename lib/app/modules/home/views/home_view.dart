@@ -307,7 +307,7 @@ class HomeView extends GetView<HomeController> {
                                   } else {
                                     controller.isStatusOn(false);
                                   }
-                                  controller.updateVehicles(context);
+                                  controller.updateVehicles(context, false);
                                 },
                               ),
                             ),

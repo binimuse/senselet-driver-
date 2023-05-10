@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:senselet_driver/app/common/widgets/custom_snack_bars.dart';
@@ -20,7 +21,7 @@ import '../data/Model/vehiclemodel.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
 import '../data/muation&query/updatevechle.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   final count = 0.obs;
   final reusableWidget = ReusableWidget();
 
@@ -41,7 +42,7 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
+    WidgetsBinding.instance.addObserver(this);
     getConstats();
 
     if (await _checkLocationPermission()) {
@@ -62,6 +63,19 @@ class HomeController extends GetxController {
       }
     }
     return true;
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      updateVehicles(null, true);
+    }
   }
 
   void _updateCameraPosition() {
@@ -122,7 +136,7 @@ class HomeController extends GetxController {
   var hassupdateVehicles = false.obs;
   var startupdateVehicles = false.obs;
 
-  updateVehicles(BuildContext context) async {
+  updateVehicles(BuildContext? context, bool isfromexit) async {
     startupdateVehicles(true);
 
     GraphQLClient client = graphQLConfiguration.clientToQuery();
@@ -136,7 +150,7 @@ class HomeController extends GetxController {
             "coordinates": [latitude.value, longitude.value]
           },
           'credential_id': PreferenceUtils.getString(Constants.userId),
-          'active': vehicleModel.first.active,
+          'active': isfromexit == true ? false : vehicleModel.first.active,
         },
       ),
     );
@@ -150,8 +164,6 @@ class HomeController extends GetxController {
       startupdateVehicles(false);
       hassupdateVehicles(false);
 
-      ShowCommonSnackBar.awesomeSnackbarfailure(
-          "Error", "something went wrong", context);
       print(result.exception);
     }
   }
