@@ -145,7 +145,9 @@ class _NavDrawerState extends State<NavDrawer> {
                         context: context,
                         icon: FontAwesomeIcons.user,
                         title: "Profile",
-                        onTap: () {}),
+                        onTap: () {
+                          Get.toNamed(Routes.PROFILE_PAGE);
+                        }),
                     buildRow(
                         textcolors: Colors.grey,
                         colors: themeColorFaded,
@@ -173,10 +175,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         icon: FontAwesomeIcons.gear,
                         title: "Settings",
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => SettingsFourPage()));
+                          Get.toNamed(Routes.SETTING);
                         }),
                     buildRow(
                         textcolors: Colors.grey,
