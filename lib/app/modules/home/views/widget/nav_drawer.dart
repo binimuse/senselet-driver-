@@ -9,6 +9,7 @@ import 'package:sizer/sizer.dart';
 import '../../../../common/widgets/app_language_picker_dialog.dart';
 import '../../../../constants/const.dart';
 import '../../../../routes/app_pages.dart';
+import '../../../../utils/constants.dart';
 import '../../controllers/home_controller.dart';
 
 class NavDrawer extends StatefulWidget {
@@ -55,12 +56,15 @@ class _NavDrawerState extends State<NavDrawer> {
                       Row(
                         children: [
                           CircleAvatar(
-                            radius: 25.0,
-                            backgroundColor: Colors.white,
+                            radius:
+                                25.0, // increase the radius to make the circle larger
+                            backgroundColor: themeColor.withOpacity(0.1),
                             child: ClipRRect(
-                              child:
-                                  Image.asset('assets/images/logo_green.png'),
                               borderRadius: BorderRadius.circular(4.0),
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                                fit: BoxFit.fitHeight,
+                              ),
                             ),
                           ),
                           Text(
@@ -85,77 +89,58 @@ class _NavDrawerState extends State<NavDrawer> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(1.h),
-                      child: Container(
-                        // width: 80.w,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [themeColor, themeColorFaded],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Icon(
-                              Icons.account_box,
-                              size: 13.h,
-                              color: Colors.white,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Driver Name",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14.sp),
+                    Obx(() => widget.controller.hasConstatFeched.value
+                        ? Padding(
+                            padding: EdgeInsets.all(1.h),
+                            child: Container(
+                              // width: 80.w,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [themeColor, themeColorFaded],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
                                 ),
-
-                                Text(
-                                  "Driver Address",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14.sp),
-                                ),
-                                // widget.controller.getDriver.isNotEmpty
-                                //     ? Text(
-                                //         widget.controller.getDriver.single.name,
-                                //         style: TextStyle(
-                                //             color: Colors.white,
-                                //             fontSize: 14.sp),
-                                //       )
-                                //     : Text(
-                                //         "Driver Name",
-                                //         style: TextStyle(
-                                //             color: Colors.white,
-                                //             fontSize: 14.sp),
-                                //       ),
-                                // widget.controller.getDriver.isNotEmpty
-                                //     ? Text(
-                                //         widget.controller.getDriver.single.city,
-                                //         style: TextStyle(
-                                //             color: Colors.white,
-                                //             fontSize: 14.sp),
-                                //       )
-                                //     : Text(
-                                //         "Driver Address",
-                                //         style: TextStyle(
-                                //             color: Colors.white,
-                                //             fontSize: 14.sp),
-                                //       ),
-                              ],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Icon(
+                                    Icons.account_box,
+                                    size: 13.h,
+                                    color: Colors.white,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.controller.driverModel.first
+                                            .firstName,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp),
+                                      ),
+                                      Text(
+                                        widget.controller.driverModel.first
+                                            .gender,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  )
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              width: 10.w,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          )
+                        : SizedBox()),
                     buildRow(
                         textcolors: Colors.grey,
                         colors: themeColorFaded,
@@ -291,10 +276,12 @@ class _NavDrawerState extends State<NavDrawer> {
       onPressed: () async {
         final prefs = await SharedPreferences.getInstance();
 
-        final acc = await prefs.remove('access_token');
-        final role = await prefs.remove('role');
+        final acc = await prefs.remove(Constants.userAccessTokenKey);
+        final id = await prefs.remove(Constants.userId);
+        final refreshTokenKey = await prefs.remove('refreshTokenKey');
+        final verifyEmail = await prefs.remove(Constants.verifyEmail);
 
-        if (acc && role) {
+        if (acc && id && refreshTokenKey && verifyEmail) {
           Get.offAllNamed(Routes.SIGNIN);
         }
         // Navigator.pop(context);

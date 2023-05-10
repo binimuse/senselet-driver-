@@ -9,10 +9,7 @@ class OrderPageView extends GetView<OrderPageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('OrderPageView'),
-        centerTitle: true,
-      ),
+      appBar: controller.reusableWidget.buildAppforpages(context, true),
       body: const Center(
         child: Text(
           'OrderPageView is working',

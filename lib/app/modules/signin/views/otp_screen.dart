@@ -32,11 +32,14 @@ class OtpScreen extends GetView<SigninController> {
                   ),
                 ),
                 CircleAvatar(
-                  radius: 60.0,
-                  backgroundColor: Colors.transparent,
+                  radius: 25.0, // increase the radius to make the circle larger
+                  backgroundColor: themeColor.withOpacity(0.1),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4.0),
-                    child: Image.asset('assets/images/logo_green.png'),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.fitHeight,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),

@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 
-class OrderPageController extends GetxController {
-  //TODO: Implement OrderPageController
+import '../../../constants/reusable/reusable.dart';
 
+class OrderPageController extends GetxController {
+  final reusableWidget = ReusableWidget();
   final count = 0.obs;
   @override
   void onInit() {

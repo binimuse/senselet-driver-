@@ -9,10 +9,7 @@ class ProfilePageView extends GetView<ProfilePageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ProfilePageView'),
-        centerTitle: true,
-      ),
+      appBar: controller.reusableWidget.buildAppforpages(context, true),
       body: const Center(
         child: Text(
           'ProfilePageView is working',

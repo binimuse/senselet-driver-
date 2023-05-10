@@ -123,7 +123,14 @@ class SigninController extends GetxController {
           await prefs.setString(
               Constants.userId, result.data!["signin"]["user_id"]);
 
-          Get.toNamed(Routes.MAIN_PAGE);
+          if (result.data!["signin"]["user"]["roles"]
+              .toString()
+              .contains("driver")) {
+            Get.toNamed(Routes.MAIN_PAGE);
+          } else {
+            ShowCommonSnackBar.awesomeSnackbarfailure(
+                "Error", "user account not authorized for driver", context);
+          }
         }
       } else {
         signingIn(false);

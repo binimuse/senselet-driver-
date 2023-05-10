@@ -1,12 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:sizer/sizer.dart';
 
+import '../../modules/notification_page/controllers/notification_page_controller.dart';
+import '../../routes/app_pages.dart';
 import '../const.dart';
 import 'cache_image_network.dart';
 import 'global_style.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ReusableWidget {
   PreferredSizeWidget bottomAppBar() {
@@ -300,11 +305,14 @@ class ReusableWidget {
       title: Row(
         children: [
           CircleAvatar(
-            radius: 25.0,
-            backgroundColor: Colors.white,
+            radius: 25.0, // increase the radius to make the circle larger
+            backgroundColor: themeColor.withOpacity(0.1),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4.0),
-              child: Image.asset('assets/images/logo_green.png'),
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.fitHeight,
+              ),
             ),
           ),
           SizedBox(
@@ -342,11 +350,14 @@ class ReusableWidget {
       title: Row(
         children: [
           CircleAvatar(
-            radius: 25.0,
-            backgroundColor: Colors.white,
+            radius: 25.0, // increase the radius to make the circle larger
+            backgroundColor: themeColor.withOpacity(0.1),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4.0),
-              child: Image.asset('assets/images/logo_green.png'),
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.fitHeight,
+              ),
             ),
           ),
           SizedBox(
@@ -368,52 +379,211 @@ class ReusableWidget {
     );
   }
 
-  buildAppforpages(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      toolbarHeight: 8.h,
-      leadingWidth: 58.w,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 10.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25.0,
-              backgroundColor: Colors.white,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
-                child: Image.asset('assets/images/logo_green.png'),
+  final NotificationPageController notifactionController =
+      Get.put(NotificationPageController());
+  buildAppforpages(BuildContext context, bool isfrommainPage) {
+    return isfrommainPage == true
+        ? AppBar(
+            elevation: 0,
+            toolbarHeight: 8.h,
+            leadingWidth: 58.w,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius:
+                        25.0, // increase the radius to make the circle larger
+                    backgroundColor: themeColor.withOpacity(0.1),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4.0),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 2.w,
+                  ),
+                  Text(
+                    "SENSELET",
+                    style: TextStyle(
+                      color: const Color(0xff129797),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(
-              width: 2.w,
-            ),
-            Text(
-              "SENSELET",
-              style: TextStyle(
-                color: const Color(0xff129797),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Get.toNamed(Routes.ORDER_HISTORY);
+                  },
+                  icon: const Icon(
+                    FontAwesomeIcons.clockRotateLeft,
+                    size: 20,
+                    color: Colors.black,
+                  )),
+              Obx(() => notifactionController.loadingNotification.isTrue
+                  ? Subscription(
+                      options: SubscriptionOptions(
+                        document: notifactionController.subscriptionDocument,
+                      ),
+                      builder: (dynamic result) {
+                        if (result.hasException) {
+                          return Text(result.exception.toString());
+                        }
+
+                        if (result.isLoading) {
+                          return const Center(
+                            child: SizedBox(),
+                          );
+                        }
+
+                        return IconButton(
+                          onPressed: () {
+                            Get.toNamed(Routes.NOTIFICATION_PAGE);
+                          },
+                          icon: badges.Badge(
+                            badgeStyle: badges.BadgeStyle(
+                                badgeColor: themeColorFaded,
+                                shape: badges.BadgeShape.circle,
+                                borderRadius: BorderRadius.circular(5)),
+                            badgeContent: result.data["users_by_pk"] != null
+                                ? Text(
+                                    result.data!["users_by_pk"]["notifications"]
+                                        .length
+                                        .toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  )
+                                : const Text(
+                                    "0",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                            child: Icon(
+                              Icons.notifications_none,
+                              color: Colors.black87,
+                              size: 7.w,
+                            ),
+                          ),
+                        );
+                      })
+                  : const SizedBox()),
+              SizedBox(
+                width: 4.w,
+              ),
+            ],
+            centerTitle: false,
+            backgroundColor: const Color(0xffF6FBFB),
+            shadowColor: Colors.transparent,
+          )
+        : AppBar(
+            elevation: 1,
+            toolbarHeight: 8.h,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
               ),
             ),
-          ],
-        ),
-      ),
-      actions: [
-        IconButton(
-            onPressed: () {
-            //    Get.toNamed(Routes.NOTIFICATION_PAGE);
-            },
-            icon: const Icon(
-              FontAwesomeIcons.bell,
-              size: 20,
-              color: Colors.black,
-            )),
-      ],
-      centerTitle: false,
-      backgroundColor: const Color(0xffF6FBFB),
-      shadowColor: Colors.transparent,
-    );
+            title: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius:
+                        25.0, // increase the radius to make the circle larger
+                    backgroundColor: themeColor.withOpacity(0.1),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4.0),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 2.w,
+                  ),
+                  Text(
+                    "SENSELET",
+                    style: TextStyle(
+                      color: const Color(0xff129797),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Get.toNamed(Routes.ORDER_HISTORY);
+                  },
+                  icon: const Icon(
+                    FontAwesomeIcons.clockRotateLeft,
+                    size: 20,
+                    color: Colors.black,
+                  )),
+              Obx(() => notifactionController.loadingNotification.isTrue
+                  ? Subscription(
+                      options: SubscriptionOptions(
+                        document: notifactionController.subscriptionDocument,
+                      ),
+                      builder: (dynamic result) {
+                        if (result.hasException) {
+                          return Text(result.exception.toString());
+                        }
+
+                        if (result.isLoading) {
+                          return const Center(
+                            child: SizedBox(),
+                          );
+                        }
+
+                        return IconButton(
+                          onPressed: () {
+                            Get.toNamed(Routes.NOTIFICATION_PAGE);
+                          },
+                          icon: badges.Badge(
+                            badgeStyle: badges.BadgeStyle(
+                                badgeColor: themeColorFaded,
+                                shape: badges.BadgeShape.circle,
+                                borderRadius: BorderRadius.circular(5)),
+                            badgeContent: result.data["users_by_pk"] != null
+                                ? Text(
+                                    result.data!["users_by_pk"]["notifications"]
+                                        .length
+                                        .toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  )
+                                : const Text(
+                                    "0",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                            child: Icon(
+                              Icons.notifications_none,
+                              color: Colors.black87,
+                              size: 7.w,
+                            ),
+                          ),
+                        );
+                      })
+                  : const SizedBox()),
+              SizedBox(
+                width: 4.w,
+              ),
+            ],
+            centerTitle: false,
+            backgroundColor: const Color(0xffF6FBFB),
+            shadowColor: Colors.transparent,
+          );
   }
 
   Widget deliveryInformation() {

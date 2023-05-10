@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -94,6 +95,9 @@ class SigninView extends GetView<SigninController> {
             borderRadius: BorderRadius.circular(6.0),
             elevation: 2,
             child: TextFormField(
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r"\s")),
+              ],
               onSaved: (value) {
                 controller.email = value!;
               },
@@ -155,6 +159,9 @@ class SigninView extends GetView<SigninController> {
               borderRadius: BorderRadius.circular(6.0),
               elevation: 2,
               child: TextFormField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp(r"\s")),
+                ],
                 controller: controller.passwordController,
                 onSaved: (value) {
                   controller.password = value!;
@@ -287,8 +294,8 @@ class SigninView extends GetView<SigninController> {
             child: ElevatedButton(
               onPressed: () {
                 KeyboardUtil.hideKeyboard(context);
-                Get.toNamed(Routes.MAIN_PAGE);
-                //     controller.checkLogin(context);
+                //Get.toNamed(Routes.MAIN_PAGE);
+                controller.checkLogin(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
@@ -330,7 +337,7 @@ class SigninView extends GetView<SigninController> {
                 ),
               ),
               onPressed: () {
-                Get.toNamed("/signup");
+                Get.toNamed(Routes.SIGNUP);
               },
             ),
           ],

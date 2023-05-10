@@ -12,7 +12,7 @@ class ForgotpasswordView extends GetView<ForgotpasswordController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: controller.reusableWidget.buildAppBar(),
+      appBar: controller.reusableWidget.buildAppforpages(context, false),
       resizeToAvoidBottomInset: false,
       body: Container(
         color: const Color(0xffF6FBFB),

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Services/graphql_conf.dart';
+import '../../../constants/const.dart';
 import '../../../constants/reusable/reusable.dart';
 import '../../../constants/reusable/shimmer_loading.dart';
 import '../data/Model/order_history_model.dart';
@@ -56,15 +57,18 @@ class OrderHistoryController extends GetxController {
         ),
       ),
       title: Padding(
-        padding: const EdgeInsets.only(left: 10.0),
+        padding: EdgeInsets.only(left: 10.0),
         child: Row(
           children: [
             CircleAvatar(
-              radius: 25.0,
-              backgroundColor: Colors.white,
+              radius: 25.0, // increase the radius to make the circle larger
+              backgroundColor: themeColor.withOpacity(0.1),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4.0),
-                child: Image.asset('assets/images/logo_green.png'),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.fitHeight,
+                ),
               ),
             ),
             SizedBox(

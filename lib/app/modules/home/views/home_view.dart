@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:senselet_driver/app/modules/home/views/widget/nav_drawer.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../constants/const.dart';
 import '../../../theme/custom_sizes.dart';
 import '../controllers/home_controller.dart';
@@ -18,7 +18,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: controller.keyforall,
-      appBar: controller.reusableWidget.buildAppforpages(context),
+      appBar: controller.reusableWidget.buildAppforpages(context, true),
       drawer: NavDrawer(),
       body: Column(
         children: [
@@ -38,27 +38,43 @@ class HomeView extends GetView<HomeController> {
   }
 
   googlemap() {
-    return GoogleMap(
-      mapType: MapType.terrain,
-      initialCameraPosition: HomeController.kGooglePlex,
-      myLocationEnabled: true,
-      zoomControlsEnabled: false,
-      circles: {
-        Circle(
-          circleId: const CircleId('currentCircle'),
-          center: controller.latLng,
-          radius: 80,
-          fillColor: themeColor.withOpacity(0.5),
-          strokeColor: themeColor.withOpacity(0.2),
+    return Obx(() {
+      return GoogleMap(
+        mapType: MapType.normal,
+        mapToolbarEnabled: true,
+        buildingsEnabled: false,
+        trafficEnabled: false,
+        indoorViewEnabled: false,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(
+            controller.latitude.value,
+            controller.longitude.value,
+          ),
+          zoom: 5.0,
         ),
-      },
-      myLocationButtonEnabled: true,
-      compassEnabled: false,
-      onMapCreated: (GoogleMapController thiscontroller) {
-        controller.gcontroller.complete(thiscontroller);
-        controller.mapController = thiscontroller;
-      },
-    );
+        myLocationEnabled: true,
+        zoomControlsEnabled: false,
+        circles: {
+          Circle(
+            circleId: const CircleId('currentCircle'),
+            center: LatLng(
+              controller.latitude.value,
+              controller.longitude.value,
+            ),
+            radius: 100,
+            fillColor: themebackground,
+            strokeColor: themeColorFaded,
+          ),
+        },
+        myLocationButtonEnabled: true,
+        compassEnabled: false,
+        onMapCreated: (GoogleMapController thiscontroller) {
+          controller.gcontroller.complete(thiscontroller);
+          controller.mapControllers = thiscontroller;
+        },
+        markers: Set<Marker>.of(controller.markers),
+      );
+    });
   }
 
   tonePrice(BuildContext context) {
@@ -222,10 +238,12 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             child: FloatingActionButton(
-              heroTag: "button1",
+              heroTag: "phone",
               isExtended: true,
               elevation: 0,
-              onPressed: () {},
+              onPressed: () {
+                _makePhoneCall(controller.constantModel.first.shortCode);
+              },
               backgroundColor: Colors.transparent,
               child: const Icon(Icons.call),
             ),
@@ -297,6 +315,14 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
+  _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+  }
+
   flotingButoontop() {
     return Positioned(
       top: 30,
@@ -332,17 +358,6 @@ class HomeView extends GetView<HomeController> {
               controller.keyforall.currentState!.openDrawer();
             },
           ),
-          FloatingActionButton(
-            heroTag: "button3",
-            isExtended: true,
-            elevation: 0,
-            onPressed: () {},
-            backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.location_searching_outlined,
-              color: themeColor,
-            ),
-          )
         ],
       ),
     );

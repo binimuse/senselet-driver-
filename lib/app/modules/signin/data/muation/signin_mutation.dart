@@ -17,8 +17,9 @@ mutation SignIn($username: String!, $password: String!){
     {
       email_verified
       id
+      roles
     }
-    roles
+    
   }
 }
  ''';
