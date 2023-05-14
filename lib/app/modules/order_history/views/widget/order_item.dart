@@ -1,31 +1,34 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 import 'package:sizer/sizer.dart';
 
 import '../../../../constants/const.dart';
+import '../../../home/data/Model/orderassignmodel.dart';
 import '../../controllers/order_history_controller.dart';
-import '../../data/Model/order_history_model.dart';
+
 import 'package:dotted_line/dotted_line.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OrderItem extends StatefulWidget {
   const OrderItem({
     Key? key,
     this.order,
-    required this.orderitem,
     required this.history,
     required this.controller,
     required this.status,
+    required this.index,
   }) : super(key: key);
 
-  final OrderHistoryModel? order;
-  final OrderHistoryItemsModel orderitem;
+  final OrderAssignedHistory? order;
+
   final bool history;
   final String status;
+  final int index;
 
   final OrderHistoryController controller;
 
@@ -71,25 +74,8 @@ class _OrderItemState extends State<OrderItem> {
                               left: 4.w,
                               bottom: 0,
                               top: 0,
-                              child: Container(
-                                width: 16.w,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: themeColor,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(18),
-                                  child: CachedNetworkImage(
-                                    imageUrl: IMAGE_URL +
-                                        widget.orderitem.prodact_images
-                                            .toString(),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                              child: SvgPicture.asset("assets/icons/order.svg",
+                                  color: themeColor),
                             ),
                           ],
                         ),
@@ -148,10 +134,79 @@ class _OrderItemState extends State<OrderItem> {
                               left: 4.w,
                             ),
                             child: Text(
-                              "Your Item",
+                              "Order detail",
                               textAlign: TextAlign.start,
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: themeColorFaded,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4.w,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Order description",
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        widget.order!.order.detail.toString(),
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 11.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 1.h,
+                          ),
+                          Divider(
+                            height: 0,
+                            color: Colors.grey[400],
+                          ),
+                          SizedBox(
+                            height: 1.h,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 4.w,
+                            ),
+                            child: Text(
+                              "Address details",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: themeColorFaded,
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -168,21 +223,30 @@ class _OrderItemState extends State<OrderItem> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Item Total",
+                                  "Pickup location",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(
-                                  widget.order!.order_total.toString(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        widget.order!.order.pickupLocationName
+                                            .toString(),
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -199,21 +263,30 @@ class _OrderItemState extends State<OrderItem> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "status",
+                                  "Delivery location",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(
-                                  widget.order!.status.toString(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Align(
+                                      child: Text(
+                                        widget.order!.order.deliveryLocationName
+                                            .toString()
+                                            .trim(),
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -230,65 +303,20 @@ class _OrderItemState extends State<OrderItem> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Tax",
+                                  "Delivery approved",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  "${widget.order!.tax.toString()} Birr",
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Divider(
-                            color: Colors.grey.shade300,
-                            height: 3,
-                          ),
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.w,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Delivery Fee",
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 1.w,
-                                ),
-                                Icon(
-                                  Icons.error,
-                                  color: Colors.grey.shade200,
-                                  size: 4.w,
-                                ),
-                                const Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Text(
-                                  "${widget.order!.delivery_fee.toString()} Birr",
+                                  widget.order!.accepted
+                                          .toString()
+                                          .contains("null")
+                                      ? "Pending"
+                                      : widget.order!.accepted.toString(),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: Colors.black87,
@@ -300,84 +328,16 @@ class _OrderItemState extends State<OrderItem> {
                             ),
                           ),
 
-                          SizedBox(
-                            height: 1.h,
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.w,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Total",
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Text(
-                                  widget.order!.total.toString(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.all(2.w),
-                            child: Material(
-                              color: const Color(0xffEBF5F4),
-                              borderRadius: BorderRadius.circular(2.w),
-                              child: Padding(
-                                padding: EdgeInsets.all(4.w),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Total saving",
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 1.w,
-                                    ),
-                                    Text(
-                                      "0 Birr",
-                                      style: TextStyle(
-                                        color: themeColor,
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                           SizedBox(
                             height: 1.h,
                           ),
                           //order Status
 
                           //   buildOrderStatus(widget.status),
-                          widget.status.toString() == "ORDERED" ||
-                                  widget.status.toString() == "ARRIVED"
-                              ? requestRefend()
-                              : const SizedBox(),
+                          // widget.status.toString() == "ORDERED" ||
+                          //         widget.status.toString() == "ARRIVED"
+                          //     ? requestRefend()
+                          //     : const SizedBox(),
 
                           SizedBox(
                             height: 1.h,
@@ -703,40 +663,20 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            // Icon(
-            //   FontAwesomeIcons.cartPlus,
-            //   color: themeColor,
-            //   size: 4.w,
-            // ),
-            SizedBox(
-              width: 0.5.h,
-            ),
-            Text(
-              "Order Id: : ${widget.order!.id.toString()} ",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ]),
           SizedBox(
             height: 0.5.h,
           ),
           Row(children: [
-            // Icon(
-            //   FontAwesomeIcons.locationArrow,
-            //   color: themeColor,
-            //   size: 4.w,
-            // ),
+            Icon(
+              FontAwesomeIcons.list,
+              color: themeColor,
+              size: 4.w,
+            ),
             SizedBox(
               width: 0.5.h,
             ),
             Text(
-              "Address: ${widget.order!.placeName.toString()} ",
+              "Order Number: ${widget.index.toString()} ",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -755,19 +695,19 @@ class _OrderItemState extends State<OrderItem> {
                 Icon(
                   FontAwesomeIcons.clock,
                   color: themeColor,
-                  size: 3.w,
+                  size: 4.w,
                 ),
                 SizedBox(
                   width: 0.5.h,
                 ),
                 Text(
-                  timeAgo(),
+                  "",
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.black45,
                     fontSize: 10.sp,
-                    fontWeight: FontWeight.w300,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ]),
@@ -775,7 +715,7 @@ class _OrderItemState extends State<OrderItem> {
                 child: SizedBox(),
               ),
               Text(
-                " ${widget.order!.total.toString()} Birr",
+                "Pending",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -789,37 +729,5 @@ class _OrderItemState extends State<OrderItem> {
         ],
       ),
     );
-  }
-
-  String timeAgo({bool numericDates = true}) {
-    var dateFormat = 'MM/dd/yy HH:mm';
-    final DateTime docDateTime =
-        DateTime.parse(widget.order!.created_at.toString());
-    DateFormat(dateFormat).format(docDateTime);
-
-    // var inputFormat = DateFormat('MM/dd/yy HH:mm');
-
-    final date2 = DateTime.now();
-    final difference = date2.difference(docDateTime);
-
-    if ((difference.inDays / 7).floor() >= 1) {
-      return (numericDates) ? '1 week ago' : 'Last week';
-    } else if (difference.inDays >= 2) {
-      return '${difference.inDays} days ago';
-    } else if (difference.inDays >= 1) {
-      return (numericDates) ? '1 day ago' : 'Yesterday';
-    } else if (difference.inHours >= 2) {
-      return '${difference.inHours} hours ago';
-    } else if (difference.inHours >= 1) {
-      return (numericDates) ? '1 hour ago' : 'An hour ago';
-    } else if (difference.inMinutes >= 2) {
-      return '${difference.inMinutes} minutes ago';
-    } else if (difference.inMinutes >= 1) {
-      return (numericDates) ? '1 minute ago' : 'A minute ago';
-    } else if (difference.inSeconds >= 3) {
-      return '${difference.inSeconds} seconds ago';
-    } else {
-      return 'Just now';
-    }
   }
 }

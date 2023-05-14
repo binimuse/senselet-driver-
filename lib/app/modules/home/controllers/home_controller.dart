@@ -132,6 +132,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           hasorderfetchedsub(false);
           isStatusOn(false);
         }
+        await PreferenceUtils.setString(
+          Constants.vehiclesId,
+          vehicleModel.first.id,
+        );
 
         startloadingConstat(false);
         hasConstatFeched(true);

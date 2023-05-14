@@ -9,7 +9,6 @@ import 'package:location/location.dart';
 import 'package:senselet_driver/app/modules/home/views/widget/qrscanner.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../constants/const.dart';
 
@@ -148,7 +147,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    QRScannerPage()));
+                                                    ScanQRCodepage()));
                                       },
                                       child: Text('Ok'),
                                     ),

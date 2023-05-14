@@ -77,6 +77,7 @@ class Order {
   Location deliveryLocation;
   String pickupLocationName;
   String detail;
+  String order_status;
   Location pickupLocation;
 
   Order({
@@ -85,6 +86,7 @@ class Order {
     required this.deliveryLocation,
     required this.pickupLocationName,
     required this.detail,
+    required this.order_status,
     required this.pickupLocation,
   });
 
@@ -94,6 +96,7 @@ class Order {
         deliveryLocation: Location.fromJson(json["delivery_location"]),
         pickupLocationName: json["pickup_location_name"],
         detail: json["detail"],
+        order_status: json["order_status"],
         pickupLocation: Location.fromJson(json["pickup_location"]),
       );
 
@@ -103,6 +106,7 @@ class Order {
         "delivery_location": deliveryLocation.toJson(),
         "pickup_location_name": pickupLocationName,
         "detail": detail,
+        "order_status": order_status,
         "pickup_location": pickupLocation.toJson(),
       };
 }

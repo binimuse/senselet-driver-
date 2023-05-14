@@ -1,80 +1,84 @@
 class OrderHistoryQueryMutation {
-  dynamic getMyOrdersHistory(int userId) {
+  dynamic getMyOrdersHistory(String vehcle) {
     return """
-      query 
-         {
-  users_by_pk(id: $userId) {
-  orders(order_by: {id: desc}) {
-      id
-      created_at
-      delivery_fee
-      status
-      other_fees
-      tax
-      order_total
-      total
-          place
-      {
+query MyQuery {
+  order_assigned_histories(where: {vehicle_id: {_eq: "$vehcle"}}, order_by: {id: desc}) {
+    id
+    created_at
+    order_id
+    accepted
+    accepted_at
+    accepted_by_id
+    arrived
+    arrived_at
+    canceled
+    canceled_at
+    canceled_by_id
+    cancellation_reason
+    package_received
+    rejected
+    rejected_at
+    rejected_by_id
+    rejection_reason
+    trip_completed
+    trip_completed_at
+    trip_started
+    trip_started_at
+    updated_at
+    vehicle_id
+       order {
         id
-        name
-        address
-        }
-      order_items {
-        created_at
-        id
-        quantity
-        variant {
-          id
-          price
-          product {
-         products_images
-            {
-              image
-            }
-            id
-            name
-          }
-        }
-      }
+      order_status
+      delivery_location_name
+      delivery_location
+      pickup_location_name
+      pickup_location
+      detail
     }
   }
-      }
+}
     """;
   }
 
-  dynamic getMyOrdersHistorysub(int userId) {
+  dynamic getMyOrdersHistorysub(String vehcle) {
     return """
-      subscription 
-         {
-  users_by_pk(id: $userId) {
-    orders(order_by: {id: desc}) {
-      id
-      created_at
-      delivery_fee
-      status
-      other_fees
-      order_total
-      total
-      order_items {
-        created_at
-        id
-        quantity
-        variant {
-          id
-          price
-          product {
-  products_images
-            {
-              image
-            }
-            id
-            name
-          }
-        }
-      }
+subscription MyQuery {
+  order_assigned_histories(where: {vehicle_id: {_eq: "$vehcle"}}, order_by: {id: desc}) {
+    id
+    created_at
+    order_id
+    accepted
+    accepted_at
+    accepted_by_id
+    arrived
+    arrived_at
+    canceled
+    canceled_at
+    canceled_by_id
+    cancellation_reason
+    package_received
+    rejected
+    rejected_at
+    rejected_by_id
+    rejection_reason
+    trip_completed
+    trip_completed_at
+    trip_started
+    trip_started_at
+    updated_at
+    vehicle_id
+       order {
+      order_status
+           id
+      delivery_location_name
+      delivery_location
+      pickup_location_name
+      pickup_location
+      detail
     }
   }
-      }
+}
+
     """;
   }
 }

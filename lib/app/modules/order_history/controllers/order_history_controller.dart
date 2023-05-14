@@ -1,25 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../../Services/graphql_conf.dart';
-import '../../../constants/const.dart';
 import '../../../constants/reusable/reusable.dart';
 import '../../../constants/reusable/shimmer_loading.dart';
-import '../data/Model/order_history_model.dart';
+import '../../../utils/constants.dart';
+import '../../home/data/Model/orderassignmodel.dart';
+
 import '../data/Mutattion/order_history_query_mutation.dart';
 
 class OrderHistoryController extends GetxController {
   final shimmerLoading = ShimmerLoading();
   final reusableWidget = ReusableWidget();
   late final subscriptionDocument;
-  var loading = false.obs;
-
-  var orderData = <OrderHistoryModel>[].obs;
-
+  var startloadingUser = false.obs;
+  var hasorderfetched = false.obs;
+  var hasorderfetchedsub = false.obs;
+  var showError = false.obs;
+  int errorCount = 0;
   final count = 0.obs;
 
   var lname = '';
@@ -37,142 +39,42 @@ class OrderHistoryController extends GetxController {
   void onClose() {}
   void increment() => count.value++;
 
-  RxList<OrderHistoryItemsModel> orderHistoryItemsModel =
-      List<OrderHistoryItemsModel>.of([]).obs;
-
   OrderHistoryQueryMutation orderHistoryQueryMutation =
       OrderHistoryQueryMutation();
 
-  buildAppforpages(BuildContext context) {
-    return AppBar(
-      elevation: 1,
-      toolbarHeight: 8.h,
-      leading: IconButton(
-        onPressed: () {
-          Get.back();
-        },
-        icon: const Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-      ),
-      title: Padding(
-        padding: EdgeInsets.only(left: 10.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25.0, // increase the radius to make the circle larger
-              backgroundColor: themeColor.withOpacity(0.1),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.fitHeight,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 2.w,
-            ),
-            Text(
-              "SENSELET",
-              style: TextStyle(
-                color: const Color(0xff129797),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        IconButton(
-            onPressed: () {
-              //     Get.toNamed(Routes.NOTIFICATION_PAGE);
-            },
-            icon: const Icon(
-              FontAwesomeIcons.bell,
-              size: 20,
-              color: Colors.black,
-            )),
-      ],
-      centerTitle: false,
-      backgroundColor: const Color(0xffF6FBFB),
-      shadowColor: Colors.transparent,
-    );
-  }
-
+  RxList<OrderAssignedHistory> getOrderModel =
+      List<OrderAssignedHistory>.of([]).obs;
   Future<void> getOrderData() async {
-    loading(true);
+    startloadingUser(true);
     final prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString('id');
+    var id = prefs.getString(Constants.vehiclesId);
 
     GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
     GraphQLClient client = graphQLConfiguration.clientToQuery();
 
     if (id != null) {
-      QueryResult result = await client.query(
-        QueryOptions(
-          document:
-              gql(orderHistoryQueryMutation.getMyOrdersHistory(int.parse(id))),
-        ),
-      );
+      QueryResult result = await client.query(QueryOptions(
+          document: gql(
+        orderHistoryQueryMutation
+            .getMyOrdersHistory(prefs.getString(Constants.vehiclesId)!),
+      )));
 
       if (!result.hasException) {
-        orderHistoryItemsModel.clear();
-        orderData.clear();
+        getOrderModel.clear();
 
-        loading(false);
+        hasorderfetched(true);
+        startloadingUser(false);
 
-        for (var i = 0; i < result.data!["users_by_pk"]["orders"].length; i++) {
-          orderData.add(OrderHistoryModel(
-            delivery_fee: result.data!["users_by_pk"]["orders"][i]
-                ["delivery_fee"],
-            id: result.data!["users_by_pk"]["orders"][i]["id"],
-            order_total: result.data!["users_by_pk"]["orders"][i]
-                ["order_total"],
-            other_fees: result.data!["users_by_pk"]["orders"][i]["other_fees"],
-            status: result.data!["users_by_pk"]["orders"][i]["status"],
-            total: result.data!["users_by_pk"]["orders"][i]["total"],
-            orderHistoryItemsModel: orderHistoryItemsModel,
-            created_at: result.data!["users_by_pk"]["orders"][i]["created_at"],
-            placeAddress: result.data!["users_by_pk"]["orders"][i]["place"]
-                ["address"],
-            placeName: result.data!["users_by_pk"]["orders"][i]["place"]
-                ["name"],
-            tax: result.data!["users_by_pk"]["orders"][i]["tax"],
-          ));
-
-          for (var j = 0;
-              j <
-                  result
-                      .data!["users_by_pk"]["orders"][i]["order_items"].length;
-              j++) {
-            orderHistoryItemsModel.add(OrderHistoryItemsModel(
-              created_at: result.data!["users_by_pk"]["orders"][i]
-                  ["order_items"][j]["created_at"],
-              id: result.data!["users_by_pk"]["orders"][i]["order_items"][j]
-                  ["id"],
-              quantity: result.data!["users_by_pk"]["orders"][i]["order_items"]
-                  [j]["quantity"],
-              prodact_id: result.data!["users_by_pk"]["orders"][i]
-                  ["order_items"][j]["variant"]["product"]["id"],
-              prodact_name: result.data!["users_by_pk"]["orders"][i]
-                  ["order_items"][j]["variant"]["product"]["name"],
-              variant_Price: result.data!["users_by_pk"]["orders"][i]
-                  ["order_items"][j]["variant"]["price"],
-              variant_id: result.data!["users_by_pk"]["orders"][i]
-                  ["order_items"][j]["variant"]["id"],
-              prodact_images: result.data!["users_by_pk"]["orders"][i]
-                      ["order_items"][j]["variant"]["product"]
-                  ["products_images"][0]["image"],
-            ));
-          }
-        }
+        getOrderModel.value = (result.data!['order_assigned_histories'] as List)
+            .map((e) => OrderAssignedHistory.fromJson(e))
+            .toList();
       } else {
-        loading(true);
+        hasorderfetched(false);
+        startloadingUser(true);
       }
+    } else {
+      print(prefs.getString(Constants.vehiclesId));
     }
   }
 
@@ -185,14 +87,19 @@ class OrderHistoryController extends GetxController {
 
   void getSubscription() async {
     final prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString('id');
 
-    if (id != null) {
-      subscriptionDocument =
-          gql(orderHistoryQueryMutation.getMyOrdersHistorysub(int.parse(id)));
+    if (prefs.getString(Constants.vehiclesId) != null) {
+      subscriptionDocument = gql(orderHistoryQueryMutation
+          .getMyOrdersHistorysub(prefs.getString(Constants.vehiclesId)!));
+      hasorderfetchedsub(true);
+      if (subscriptionDocument != null) {
+        hasorderfetchedsub(true);
+      } else {
+        hasorderfetchedsub(false);
+      }
     }
   }
 }
 
 // ignore: constant_identifier_names
-enum CurrentOrderPage { ON_GOING, HISTORY, ARRIVED }
+enum CurrentOrderPage { ON_GOING, HISTORY }

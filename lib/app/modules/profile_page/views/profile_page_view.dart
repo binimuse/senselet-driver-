@@ -438,37 +438,6 @@ class ProfilePageView extends GetView<ProfilePageController> {
         });
   }
 
-  void _showAlertDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text('No', style: TextStyle(color: SOFT_BLUE)));
-    Widget continueButton = TextButton(
-        onPressed: () {
-          // controller.updateonlyprofilepic();
-          Navigator.pop(context);
-        },
-        child: const Text('Yes', style: TextStyle(color: SOFT_BLUE)));
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      content: const Text('Change Profile Picture ?'),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
 
   DateTime selectedDate = DateTime.now();
   String? formattedDates;

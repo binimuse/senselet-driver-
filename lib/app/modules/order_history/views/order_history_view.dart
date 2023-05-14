@@ -49,10 +49,7 @@ class OrderHistoryView extends GetView<OrderHistoryController> {
                           child: controller.currentOrderPage.value ==
                                   CurrentOrderPage.ON_GOING
                               ? const OngoingPage()
-                              : controller.currentOrderPage.value ==
-                                      CurrentOrderPage.ARRIVED
-                                  ? const ArrivedWay()
-                                  : const HistoryPage(),
+                              : const HistoryPage(),
                         )),
                       ],
                     ),
@@ -232,36 +229,6 @@ class OrderHistoryView extends GetView<OrderHistoryController> {
             ),
             SizedBox(
               width: 1.h,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                controller.changePage(CurrentOrderPage.ARRIVED);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: controller.currentOrderPage.value ==
-                        CurrentOrderPage.ARRIVED
-                    ? themeColor
-                    : Colors.grey.shade200,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                shadowColor: Colors.transparent,
-                padding: EdgeInsets.symmetric(
-                  vertical: 1.5.h,
-                  horizontal: 6.w,
-                ),
-              ),
-              child: Text(
-                'Arrived',
-                style: TextStyle(
-                  color: controller.currentOrderPage.value ==
-                          CurrentOrderPage.ARRIVED
-                      ? Colors.white
-                      : themeColor,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
             ),
             SizedBox(
               width: 1.h,
