@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:senselet_driver/app/common/widgets/custom_snack_bars.dart';
 
 import '../../../../main.dart';
 import '../../../common/graphql_common_api.dart';
@@ -17,10 +15,16 @@ import '../../../utils/constants.dart';
 import '../../../utils/sahred_prefrence.dart';
 import '../data/Model/constantsmodel.dart';
 import '../data/Model/drivermodel.dart';
+import '../data/Model/orderassignmodel.dart';
 import '../data/Model/vehiclemodel.dart';
+import '../data/muation&query/acceptorder.dart';
+import '../data/muation&query/cancelorder.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
 import '../data/muation&query/order_sub.dart';
 import '../data/muation&query/updatevechle.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+
+import '../views/widget/navigation_screen.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
   final count = 0.obs;
@@ -45,7 +49,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
     getConstats();
-    getordersub();
 
     if (await _checkLocationPermission()) {
       var position = await Geolocator.getCurrentPosition();
@@ -69,6 +72,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onClose() {
+    FlutterRingtonePlayer.stop();
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
@@ -97,6 +101,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   var startloadingConstat = false.obs;
   var hasConstatFeched = false.obs;
   void getConstats() async {
+    FlutterRingtonePlayer.stop();
     try {
       startloadingConstat(true);
 
@@ -120,7 +125,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
         if (vehicleModel.first.active == true) {
           isStatusOn(true);
+
+          getordersub();
+          //     PreferenceUtils.setString(Constants.userId, vehicleModel.first.id);
         } else {
+          hasorderfetchedsub(false);
           isStatusOn(false);
         }
 
@@ -172,15 +181,162 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   OrderSubscription orderSubscription = OrderSubscription();
   var hasorderfetchedsub = false.obs;
-  late final subscriptionDocument;
+
+  var subscriptionDocument;
+  RxList<OrderAssignedHistory> orderAssignedHistory =
+      List<OrderAssignedHistory>.of([]).obs;
   void getordersub() async {
-    subscriptionDocument = gql(orderSubscription
-        .getOrderSubscription(PreferenceUtils.getString(Constants.vehiclesId)));
-    if (subscriptionDocument != null) {
-     
-      hasorderfetchedsub(true);
+    subscriptionDocument =
+        gql(orderSubscription.getOrderSubscription(vehicleModel.first.id));
+
+    // Assuming you have set up the GraphQL client correctly
+    final QueryOptions options = QueryOptions(document: subscriptionDocument);
+
+    // Use WebSocketLink for subscriptions
+    final WebSocketLink websocketLink = WebSocketLink(
+      'ws://159.223.227.87:8888/v1/graphql',
+      config: const SocketClientConfig(
+        headers: {
+          'x-hasura-admin-secret': "ad8sddi6roXj9tmejrWwX992by5S5Q",
+        },
+        autoReconnect: true,
+        inactivityTimeout: Duration(seconds: 30),
+      ),
+    );
+
+    // Create a Link that combines the WebSocketLink and HttpLink
+    final Link link = Link.split(
+      (request) => request.isSubscription,
+      websocketLink,
+      HttpLink('http://159.223.227.87:8888/v1/graphql'),
+    );
+
+    // Create a GraphQL client with the combined link
+    final GraphQLClient client =
+        GraphQLClient(link: link, cache: GraphQLCache());
+
+    final QueryResult result = await client.query(options);
+
+    if (!result.hasException) {
+      final dynamic data = result.data;
+
+      if (data["order_assigned_histories"].length > 0) {
+        orderAssignedHistory.value =
+            (result.data!['order_assigned_histories'] as List)
+                .map((e) => OrderAssignedHistory.fromJson(e))
+                .toList();
+
+        hasorderfetchedsub(true);
+        playAudio();
+      } else {
+        stopAudio();
+        hasorderfetchedsub(false);
+      }
+
+      // Use the retrieved data as needed
+      // For example:
+      print(data);
     } else {
+      stopAudio();
       hasorderfetchedsub(false);
+      print('Error occurred: ${result.exception.toString()}');
+    }
+  }
+
+  // Define functions to handle audio playback
+
+  void playAudio() async {
+    FlutterRingtonePlayer.play(
+      android: AndroidSounds.ringtone,
+      ios: IosSounds.glass,
+      looping: true, // Android only - API >= 28
+      volume: 0.1, // Android only - API >= 28
+      asAlarm: false, // Android only - all APIs
+    );
+  }
+
+  void stopAudio() {
+    FlutterRingtonePlayer.stop();
+  }
+
+  @override
+  void dispose() {
+    FlutterRingtonePlayer.stop();
+    super.dispose();
+  }
+
+  //cancel Order
+  var hasscancelOrder = false.obs;
+  var startcancelOrder = false.obs;
+  cancelOrder(BuildContext? context, String id) async {
+    startcancelOrder(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(CancelOrdermuatation.cancelOrdermuatation),
+        variables: <String, dynamic>{
+          'id': id,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      startcancelOrder(false);
+      hasscancelOrder(true);
+
+      hasorderfetchedsub(false);
+
+      stopAudio();
+    } else {
+      startcancelOrder(false);
+      hasscancelOrder(false);
+
+      print(result.exception);
+    }
+  }
+
+  //cancel Order
+  var hassacceptOrder = false.obs;
+  var startacceptOrder = false.obs;
+  acceptOrder(
+      BuildContext? context,
+      String id,
+      double coordinatlat,
+      double coordinatlng,
+      String pickupLocationName,
+      String deliveryLocation) async {
+    startacceptOrder(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(AcceptOrdermuatation.acceptOrdermuatation),
+        variables: <String, dynamic>{
+          'id': id,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      startacceptOrder(false);
+      hassacceptOrder(true);
+
+      hasorderfetchedsub(false);
+      stopAudio();
+      isStatusOn(false);
+
+      Get.to(NavigationScreen(coordinatlat, coordinatlng, latitude.value,
+          longitude.value, pickupLocationName, deliveryLocation));
+
+      updateVehicles(context, true);
+    } else {
+      startacceptOrder(false);
+      hassacceptOrder(false);
+
+      print(result.exception);
     }
   }
 }
