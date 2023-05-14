@@ -219,19 +219,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     if (!result.hasException) {
       final dynamic data = result.data;
-
-      if (data["order_assigned_histories"].length > 0) {
-        orderAssignedHistory.value =
-            (result.data!['order_assigned_histories'] as List)
-                .map((e) => OrderAssignedHistory.fromJson(e))
-                .toList();
-
-        hasorderfetchedsub(true);
-        playAudio();
-      } else {
-        stopAudio();
-        hasorderfetchedsub(false);
-      }
+      orderAssignedHistory.value =
+          (result.data!['order_assigned_histories'] as List)
+              .map((e) => OrderAssignedHistory.fromJson(e))
+              .toList();
+      hasorderfetchedsub(true);
+      playAudio();
 
       // Use the retrieved data as needed
       // For example:
@@ -286,9 +279,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       startcancelOrder(false);
       hasscancelOrder(true);
 
-      hasorderfetchedsub(false);
+      //  hasorderfetchedsub(false);
 
-      stopAudio();
+      // stopAudio();
     } else {
       startcancelOrder(false);
       hasscancelOrder(false);
@@ -324,7 +317,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       startacceptOrder(false);
       hassacceptOrder(true);
 
-      hasorderfetchedsub(false);
+      //  hasorderfetchedsub(false);
       stopAudio();
       isStatusOn(false);
 

@@ -397,281 +397,291 @@ class HomeView extends GetView<HomeController> {
 
   Widget popupdialogue(BuildContext context, data) {
     return data["order_assigned_histories"].length > 0
-        ? Container(
-            width: Get.width,
-            height: 31.h,
-            margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 15.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              color: Colors.white,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        ? FutureBuilder(
+            future: _showProgressBar2(),
+            builder: (context, snapshot) {
+              return Container(
+                width: Get.width,
+                height: 31.h,
+                margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 15.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  color: Colors.white,
+                ),
+                child: Column(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10, top: 20),
-                      width: 25.w,
-                      height: 15.h,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 68, 171, 255)
-                              .withOpacity(0.1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(6),
-                          )),
-                      child: Icon(
-                        Icons.local_shipping_rounded,
-                        size: 15.w,
-                        color: themeColor,
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Row(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10, top: 20),
+                          width: 25.w,
+                          height: 15.h,
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 68, 171, 255)
+                                  .withOpacity(0.1),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6),
+                              )),
+                          child: Icon(
+                            Icons.local_shipping_rounded,
+                            size: 15.w,
+                            color: themeColor,
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.my_location,
-                                  size: 5.w,
-                                  color: themeColorFaded,
+                                SizedBox(
+                                  height: 5.h,
                                 ),
-                                Expanded(
-                                  child: RichText(
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'From : ',
-                                            style: TextStyle(
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.my_location,
+                                      size: 5.w,
+                                      color: themeColorFaded,
+                                    ),
+                                    Expanded(
+                                      child: RichText(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text: 'From : ',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    color: Colors.grey)),
+                                            TextSpan(
+                                              text: controller
+                                                      .orderAssignedHistory
+                                                      .first
+                                                      .order
+                                                      .pickupLocationName
+                                                      .toString()
+                                                      .split(',')[1]
+                                                      ?.trim() ??
+                                                  '',
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                                 fontSize: 12,
-                                                color: Colors.grey)),
-                                        TextSpan(
-                                          text: controller
-                                                  .orderAssignedHistory
-                                                  .first
-                                                  .order
-                                                  .pickupLocationName
-                                                  .toString()
-                                                  .split(',')[1]
-                                                  ?.trim() ??
-                                              '',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 12,
-                                          ),
-                                        )
-                                      ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2.4.w),
+                                  child: SizedBox(
+                                    height: 2.h,
+                                    child: DottedLine(
+                                      dashLength: 10,
+                                      direction: Axis.vertical,
+                                      dashColor:
+                                          Color.fromARGB(255, 68, 171, 255),
+                                      dashGapLength: 1.5,
+                                      lineThickness: 1,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 2.4.w),
-                              child: SizedBox(
-                                height: 2.h,
-                                child: DottedLine(
-                                  dashLength: 10,
-                                  direction: Axis.vertical,
-                                  dashColor: Color.fromARGB(255, 68, 171, 255),
-                                  dashGapLength: 1.5,
-                                  lineThickness: 1,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  size: 5.5.w,
-                                  color: themeColorFaded,
-                                ),
-                                RichText(
-                                  maxLines: 1,
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'To : ',
-                                          style: TextStyle(
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: 5.5.w,
+                                      color: themeColorFaded,
+                                    ),
+                                    RichText(
+                                      maxLines: 1,
+                                      text: TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: 'To : ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  color: Colors.grey)),
+                                          TextSpan(
+                                            text: controller
+                                                    .orderAssignedHistory
+                                                    .first
+                                                    .order
+                                                    .deliveryLocationName
+                                                    .toString()
+                                                    .split(',')[1]
+                                                    .trim() ??
+                                                '',
+                                            style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 12,
+                                              color: Colors.black,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Detail:-",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
                                               color: Colors.grey)),
-                                      TextSpan(
-                                        text: controller
-                                                .orderAssignedHistory
-                                                .first
-                                                .order
-                                                .deliveryLocationName
-                                                .toString()
-                                                .split(',')[1]
-                                                .trim() ??
-                                            '',
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        controller.orderAssignedHistory.first
+                                            .order.detail
+                                            .toString(),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: Colors.black,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 2,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Detail:-",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                          color: Colors.grey)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    controller
-                                        .orderAssignedHistory.first.order.detail
-                                        .toString(),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600),
-                                  ),
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Container(
+                          height: 17.h,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 20.w,
+                                height: 6.h,
+                                decoration: BoxDecoration(
+                                    color: themeColor,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(6),
+                                        bottomRight: Radius.circular(6))),
+                                child: Center(
+                                    child: Text(
+                                  "New Order",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                )),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // SizedBox(width: 2.w,)
+                      ],
+                    ),
+                    SizedBox(
+                      height: 2.h,
                     ),
                     Container(
-                      height: 17.h,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 2.w,
+                      ),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: 20.w,
-                            height: 6.h,
-                            decoration: BoxDecoration(
-                                color: themeColor,
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(6),
-                                    bottomRight: Radius.circular(6))),
-                            child: Center(
-                                child: Text(
-                              "New Order",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
-                            )),
-                          ),
+                          SizedBox(
+                              height: 6.h,
+                              width: 42.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    controller.cancelOrder(
+                                        context,
+                                        controller
+                                            .orderAssignedHistory.first.id);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 1.h),
+                                  ),
+                                  child: Text('Decline',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600)),
+                                ),
+                              )),
+                          SizedBox(
+                              height: 6.h,
+                              width: 42.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    controller.acceptOrder(
+                                      context,
+                                      controller.orderAssignedHistory.first.id,
+                                      controller.orderAssignedHistory.first
+                                          .order.pickupLocation.coordinates[0],
+                                      controller.orderAssignedHistory.first
+                                          .order.pickupLocation.coordinates[1],
+                                      controller.orderAssignedHistory.first
+                                          .order.pickupLocationName,
+                                      controller.orderAssignedHistory.first
+                                          .order.deliveryLocationName,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 1.h),
+                                  ),
+                                  child: Text('Accept',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600)),
+                                ),
+                              )),
                         ],
                       ),
                     ),
-                    // SizedBox(width: 2.w,)
+                    SizedBox(
+                      height: 1,
+                    )
                   ],
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 2.w,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                          height: 6.h,
-                          width: 42.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                controller.cancelOrder(context,
-                                    controller.orderAssignedHistory.first.id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                padding: EdgeInsets.symmetric(vertical: 1.h),
-                              ),
-                              child: Text('Decline',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600)),
-                            ),
-                          )),
-                      SizedBox(
-                          height: 6.h,
-                          width: 42.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                controller.acceptOrder(
-                                  context,
-                                  controller.orderAssignedHistory.first.id,
-                                  controller.orderAssignedHistory.first.order
-                                      .pickupLocation.coordinates[0],
-                                  controller.orderAssignedHistory.first.order
-                                      .pickupLocation.coordinates[1],
-                                  controller.orderAssignedHistory.first.order
-                                      .pickupLocationName,
-                                  controller.orderAssignedHistory.first.order
-                                      .deliveryLocationName,
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                padding: EdgeInsets.symmetric(vertical: 1.h),
-                              ),
-                              child: Text('Accept',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600)),
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 1,
-                )
-              ],
-            ),
+              );
+            },
           )
         : FutureBuilder(
             future: _showProgressBar(),
@@ -682,8 +692,14 @@ class HomeView extends GetView<HomeController> {
   }
 
   Future<void> _showProgressBar() async {
-    controller.stopAudio();
-    return await Future.delayed(const Duration(seconds: 2));
+    return controller.stopAudio();
+
+//
+  }
+
+  Future<void> _showProgressBar2() async {
+    return controller.playAudio();
+
 //
   }
 }
