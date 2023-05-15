@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:senselet_driver/app/constants/const.dart';
+import 'package:senselet_driver/app/modules/home/controllers/home_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanQRCodepage extends StatefulWidget {
-  const ScanQRCodepage({super.key});
+  final String orderId;
+  final HomeController homeController;
+  const ScanQRCodepage(this.orderId, this.homeController, {super.key});
 
   @override
   State<ScanQRCodepage> createState() => _ScanQRCodepageState();
@@ -152,6 +155,15 @@ class _ScanQRCodepageState extends State<ScanQRCodepage> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+
+        print(scanData);
+        print(widget.orderId);
+
+        if (scanData != null) {
+          if (scanData.code.toString().contains(widget.orderId)) {
+            widget.homeController.packgereceived(context, widget.orderId);
+          }
+        }
       });
     });
   }

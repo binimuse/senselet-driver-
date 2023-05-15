@@ -21,6 +21,9 @@ import '../data/muation&query/acceptorder.dart';
 import '../data/muation&query/cancelorder.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
 import '../data/muation&query/order_sub.dart';
+import '../data/muation&query/packgerecived.dart';
+import '../data/muation&query/tripcomplete.dart';
+import '../data/muation&query/tripstart.dart';
 import '../data/muation&query/updatevechle.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
@@ -324,14 +327,117 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       //  hasorderfetchedsub(false);
       stopAudio();
       isStatusOn(false);
-
-      Get.to(NavigationScreen(coordinatlat, coordinatlng, latitude.value,
-          longitude.value, pickupLocationName, deliveryLocation));
+      HomeController homeController = Get.find<HomeController>();
+      Get.to(NavigationScreen(
+          coordinatlat,
+          coordinatlng,
+          latitude.value,
+          longitude.value,
+          pickupLocationName,
+          deliveryLocation,
+          homeController,
+          id));
 
       updateVehicles(context, true);
     } else {
       startacceptOrder(false);
       hassacceptOrder(false);
+
+      print(result.exception);
+    }
+  }
+
+  //trip Start
+  var hasstripStart = false.obs;
+  var starttripStart = false.obs;
+  tripStart(BuildContext? context, String id) async {
+    starttripStart(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(TripStartmuatation.tripStartmuatation),
+        variables: <String, dynamic>{
+          'id': id,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      starttripStart(false);
+      hasstripStart(true);
+
+      //  hasorderfetchedsub(false);
+
+      // stopAudio();
+    } else {
+      starttripStart(false);
+      hasstripStart(false);
+
+      print(result.exception);
+    }
+  }
+
+  //trip Start
+  var hasstripComplete = false.obs;
+  var starthastripComplete = false.obs;
+  tripComplete(BuildContext? context, String id) async {
+    starthastripComplete(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(TripCompletemuatation.tripCompletemuatation),
+        variables: <String, dynamic>{
+          'id': id,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      starthastripComplete(false);
+      hasstripComplete(true);
+
+      //  hasorderfetchedsub(false);
+
+      // stopAudio();
+    } else {
+      starthastripComplete(false);
+      hasstripComplete(false);
+
+      print(result.exception);
+    }
+  }
+
+//packge received
+  var hasspackgereceived = false.obs;
+  var startpackgereceived = false.obs;
+  packgereceived(BuildContext? context, String id) async {
+    startpackgereceived(true);
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(Packgereciveduatation.packgereciveduatation),
+        variables: <String, dynamic>{
+          'id': id,
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      startpackgereceived(false);
+      hasspackgereceived(true);
+
+      //  hasorderfetchedsub(false);
+
+      // stopAudio();
+    } else {
+      startpackgereceived(false);
+      hasspackgereceived(false);
 
       print(result.exception);
     }

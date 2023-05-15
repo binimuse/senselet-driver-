@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 
 import '../../../../constants/const.dart';
+import '../../controllers/home_controller.dart';
 
 class NavigationScreen extends StatefulWidget {
   final double orderlat;
@@ -18,12 +19,21 @@ class NavigationScreen extends StatefulWidget {
   // user lat lng
   final double userlat;
   final double userlng;
+  final HomeController homeController;
+  final String orderId;
 
   //location name
   final String picklocationName;
   final String deliverlocationName;
-  const NavigationScreen(this.orderlat, this.orderlng, this.userlat,
-      this.userlng, this.picklocationName, this.deliverlocationName,
+  const NavigationScreen(
+      this.orderlat,
+      this.orderlng,
+      this.userlat,
+      this.userlng,
+      this.picklocationName,
+      this.deliverlocationName,
+      this.homeController,
+      this.orderId,
       {Key? key})
       : super(key: key);
 
@@ -100,11 +110,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           !deliveryStarted ? themeColor : Colors.red,
                       text: deliveryStarted
                           ? 'Finish delivery'
-                          : 'Slide to start',
+                          : 'Slide to start trip',
                       onConfirmation: () async {
                         setState(() {
                           deliveryStarted = true;
-
+                          widget.homeController
+                              .tripStart(context, widget.orderId);
                           if (!showqr) {
                             showDialog(
                               context: context,
@@ -120,6 +131,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                     TextButton(
                                       onPressed: () {
                                         showqr = true;
+
                                         Navigator.of(context).pop();
                                       },
                                       child: Text('Ok'),
@@ -143,11 +155,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
+                                        widget.homeController.tripComplete(
+                                            context, widget.orderId);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ScanQRCodepage()));
+                                                    ScanQRCodepage(
+                                                        widget.orderId,
+                                                        widget
+                                                            .homeController)));
                                       },
                                       child: Text('Ok'),
                                     ),
