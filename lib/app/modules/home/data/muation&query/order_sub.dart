@@ -6,7 +6,9 @@ subscription MySubscription {
   order_assigned_histories(where: 
   {rejected: {_is_null: true},
    accepted: {_is_null: true}, 
-   vehicle_id: {_eq: "$vehicleid"}, 
+   trip_started: {_is_null: true}, 
+ trip_completed: {_is_null: true}, 
+    vehicle_id: {_eq: "$vehicleid"}, 
    canceled: {_is_null: true}}) {
     accepted
     accepted_at
@@ -24,6 +26,7 @@ subscription MySubscription {
     vehicle_id
     order {
       id
+      created_at
       delivery_location_name
       delivery_location
       pickup_location_name

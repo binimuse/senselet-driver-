@@ -5,10 +5,14 @@ import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../../../../common/widgets/custom_snack_bars.dart';
+
 class ScanQRCodepage extends StatefulWidget {
   final String orderId;
+  final String orderHistoryId;
   final HomeController homeController;
-  const ScanQRCodepage(this.orderId, this.homeController, {super.key});
+  const ScanQRCodepage(this.orderId, this.orderHistoryId, this.homeController,
+      {super.key});
 
   @override
   State<ScanQRCodepage> createState() => _ScanQRCodepageState();
@@ -67,54 +71,40 @@ class _ScanQRCodepageState extends State<ScanQRCodepage> {
                             padding: EdgeInsets.symmetric(vertical: 2.3.h),
                           ),
                           onPressed: () async {
-                            await controller?.toggleFlash();
-                            setState(() {});
+                            setState(() {
+                              print(result!.code);
+                              print(widget.orderHistoryId);
+
+                              if (result != null) {
+                                if (result!.code
+                                    .toString()
+                                    .contains(widget.orderHistoryId)) {
+                                  widget.homeController.packgereceived(context,
+                                      widget.orderId, widget.orderHistoryId);
+
+                                      
+                                }
+                              } else {
+                                ShowCommonSnackBar.awesomeSnackbarfailure(
+                                    "Error", "Invalid QR", context);
+                              }
+                            });
                           },
-                          child: FutureBuilder(
-                            future: controller?.getFlashStatus(),
-                            builder: (context, snapshot) {
-                              return snapshot.data == true
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Turn off Flash',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .copyWith(
-                                                    color: themeColor,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 13.sp)),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Icon(
-                                          Icons.flashlight_off,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Finish',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
                                           color: themeColor,
-                                        )
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        Text('Turn on Flash',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .copyWith(
-                                                    color: themeColor,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 13.sp)),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Icon(
-                                          Icons.flashlight_on,
-                                          color: themeColor,
-                                        )
-                                      ],
-                                    );
-                            },
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13.sp)),
+                              SizedBox(
+                                width: 5,
+                              ),
+                            ],
                           )),
                     ),
                   ],
@@ -155,15 +145,6 @@ class _ScanQRCodepageState extends State<ScanQRCodepage> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
-
-        print(scanData);
-        print(widget.orderId);
-
-        if (scanData != null) {
-          if (scanData.code.toString().contains(widget.orderId)) {
-            widget.homeController.packgereceived(context, widget.orderId);
-          }
-        }
       });
     });
   }

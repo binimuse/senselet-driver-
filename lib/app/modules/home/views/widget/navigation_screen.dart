@@ -21,6 +21,7 @@ class NavigationScreen extends StatefulWidget {
   final double userlng;
   final HomeController homeController;
   final String orderId;
+  final String orderHistoryId;
 
   //location name
   final String picklocationName;
@@ -34,6 +35,7 @@ class NavigationScreen extends StatefulWidget {
       this.deliverlocationName,
       this.homeController,
       this.orderId,
+      this.orderHistoryId,
       {Key? key})
       : super(key: key);
 
@@ -156,13 +158,18 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                     TextButton(
                                       onPressed: () {
                                         widget.homeController.tripComplete(
-                                            context, widget.orderId);
+                                          context,
+                                          widget.orderId,
+                                          widget.orderHistoryId,
+                                        );
+
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ScanQRCodepage(
                                                         widget.orderId,
+                                                        widget.orderHistoryId,
                                                         widget
                                                             .homeController)));
                                       },

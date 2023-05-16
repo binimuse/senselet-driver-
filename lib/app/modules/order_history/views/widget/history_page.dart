@@ -31,15 +31,16 @@ class HistoryPage extends GetView<OrderHistoryController> {
                 return ListView.builder(
                     itemCount: controller.getOrderModel.length,
                     itemBuilder: (context, index) {
-                      if (result.data!["orders"][index]["order_status"] ==
-                          "ASSIGNED") {
+                      if (result.data!["order_assigned_histories"][index]
+                              ["package_received"] ==
+                          true) {
                         return OrderItem(
                             order: controller.getOrderModel.elementAt(index),
                             history: true,
                             index: index,
                             controller: controller,
-                            status: result.data!["users_by_pk"]["orders"][index]
-                                ["status"]);
+                            status: result.data!["order_assigned_histories"]
+                                [index]["order"]["order_status"]);
                       } else {
                         return const SizedBox();
                       }

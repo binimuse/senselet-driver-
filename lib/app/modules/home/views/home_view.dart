@@ -335,6 +335,7 @@ class HomeView extends GetView<HomeController> {
                                   }
                                   // controller.getConstats();
                                   controller.updateVehicles(context, false);
+                                  controller.stopAudio();
                                 },
                               ),
                             ),
@@ -396,7 +397,8 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget popupdialogue(BuildContext context, data) {
-    return data["order_assigned_histories"].length > 0
+    return Obx(() => data["order_assigned_histories"].length > 0 &&
+            controller.orderAssignedHistory.isNotEmpty
         ? FutureBuilder(
             future: _showProgressBar2(),
             builder: (context, snapshot) {
@@ -647,6 +649,8 @@ class HomeView extends GetView<HomeController> {
                                     controller.acceptOrder(
                                       context,
                                       controller.orderAssignedHistory.first.id,
+                                      controller
+                                          .orderAssignedHistory.first.order.id,
                                       controller.orderAssignedHistory.first
                                           .order.pickupLocation.coordinates[0],
                                       controller.orderAssignedHistory.first
@@ -688,10 +692,12 @@ class HomeView extends GetView<HomeController> {
             builder: (context, snapshot) {
               return SizedBox();
             },
-          );
+          ));
   }
 
   Future<void> _showProgressBar() async {
+   
+    controller.getordersub();
     return controller.stopAudio();
 
 //

@@ -698,32 +698,24 @@ class _OrderItemState extends State<OrderItem> {
                   size: 4.w,
                 ),
                 SizedBox(
-                  width: 0.5.h,
+                  width: 1.5.w,
                 ),
                 Text(
-                  "",
+                  widget.status.toString().contains("null")
+                      ? "Pending"
+                      : widget.status.toString(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w500,
+                    color: themeColor,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
                   ),
-                ),
+                )
               ]),
               const Expanded(
                 child: SizedBox(),
               ),
-              Text(
-                "Pending",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: themeColor,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                ),
-              )
             ],
           ),
         ],

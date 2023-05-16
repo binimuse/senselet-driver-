@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:senselet_driver/app/routes/app_pages.dart';
 
 import '../../../../main.dart';
 import '../../../common/graphql_common_api.dart';
@@ -50,8 +51,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() async {
     super.onInit();
+
     WidgetsBinding.instance.addObserver(this);
     getConstats();
+    stopAudio();
 
     if (await _checkLocationPermission()) {
       var position = await Geolocator.getCurrentPosition();
@@ -231,7 +234,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
               .map((e) => OrderAssignedHistory.fromJson(e))
               .toList();
       hasorderfetchedsub(true);
-      playAudio();
+
+      if (orderAssignedHistory.isNotEmpty) {
+        playAudio();
+      }
 
       // Use the retrieved data as needed
       // For example:
@@ -303,6 +309,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   acceptOrder(
       BuildContext? context,
       String id,
+      String orderId,
       double coordinatlat,
       double coordinatlng,
       String pickupLocationName,
@@ -336,7 +343,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           pickupLocationName,
           deliveryLocation,
           homeController,
-          id));
+          id,
+          orderId));
 
       updateVehicles(context, true);
     } else {
@@ -382,7 +390,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   //trip Start
   var hasstripComplete = false.obs;
   var starthastripComplete = false.obs;
-  tripComplete(BuildContext? context, String id) async {
+  tripComplete(BuildContext? context, String id, String orderId) async {
     starthastripComplete(true);
 
     GraphQLClient client = graphQLConfiguration.clientToQuery();
@@ -392,6 +400,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         document: gql(TripCompletemuatation.tripCompletemuatation),
         variables: <String, dynamic>{
           'id': id,
+          'order_id': orderId,
         },
       ),
     );
@@ -414,7 +423,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 //packge received
   var hasspackgereceived = false.obs;
   var startpackgereceived = false.obs;
-  packgereceived(BuildContext? context, String id) async {
+  packgereceived(BuildContext? context, String id, String orderId) async {
     startpackgereceived(true);
 
     GraphQLClient client = graphQLConfiguration.clientToQuery();
@@ -424,6 +433,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         document: gql(Packgereciveduatation.packgereciveduatation),
         variables: <String, dynamic>{
           'id': id,
+          'order_id': orderId,
         },
       ),
     );
@@ -432,9 +442,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       startpackgereceived(false);
       hasspackgereceived(true);
 
-      //  hasorderfetchedsub(false);
-
-      // stopAudio();
+      Get.offAllNamed(Routes.MAIN_PAGE);
     } else {
       startpackgereceived(false);
       hasspackgereceived(false);
