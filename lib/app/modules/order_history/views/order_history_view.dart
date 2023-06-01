@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:senselet_driver/app/modules/order_history/views/widget/arrived_page.dart';
 import 'package:senselet_driver/app/modules/order_history/views/widget/history_page.dart';
 import 'package:senselet_driver/app/modules/order_history/views/widget/ongoing_page.dart';
 

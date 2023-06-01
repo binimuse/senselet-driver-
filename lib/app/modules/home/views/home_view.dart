@@ -463,14 +463,13 @@ class HomeView extends GetView<HomeController> {
                                                     color: Colors.grey)),
                                             TextSpan(
                                               text: controller
-                                                      .orderAssignedHistory
-                                                      .first
-                                                      .order
-                                                      .pickupLocationName
-                                                      .toString()
-                                                      .split(',')[1]
-                                                      ?.trim() ??
-                                                  '',
+                                                  .orderAssignedHistory
+                                                  .first
+                                                  .order
+                                                  .pickupLocationName
+                                                  .toString()
+                                                  .split(',')[1]
+                                                  .trim(),
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
@@ -516,14 +515,13 @@ class HomeView extends GetView<HomeController> {
                                                   color: Colors.grey)),
                                           TextSpan(
                                             text: controller
-                                                    .orderAssignedHistory
-                                                    .first
-                                                    .order
-                                                    .deliveryLocationName
-                                                    .toString()
-                                                    .split(',')[1]
-                                                    .trim() ??
-                                                '',
+                                                .orderAssignedHistory
+                                                .first
+                                                .order
+                                                .deliveryLocationName
+                                                .toString()
+                                                .split(',')[1]
+                                                .trim(),
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 12,
@@ -696,7 +694,6 @@ class HomeView extends GetView<HomeController> {
   }
 
   Future<void> _showProgressBar() async {
-   
     controller.getordersub();
     return controller.stopAudio();
 

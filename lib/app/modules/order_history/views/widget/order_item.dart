@@ -2,16 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import 'package:sizer/sizer.dart';
 
 import '../../../../constants/const.dart';
+import '../../../home/controllers/home_controller.dart';
 import '../../../home/data/Model/orderassignmodel.dart';
+import '../../../home/views/widget/navigation_screen.dart';
 import '../../controllers/order_history_controller.dart';
 
 import 'package:dotted_line/dotted_line.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter_svg/flutter_svg.dart';
 
 class OrderItem extends StatefulWidget {
@@ -55,67 +57,87 @@ class _OrderItemState extends State<OrderItem> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Material(
-              elevation: 6,
-              shadowColor: themeColorFaded.withOpacity(0.2),
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: EdgeInsets.all(3.w),
-                child: IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: 20.w,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 4.w,
-                              bottom: 0,
-                              top: 0,
-                              child: SvgPicture.asset("assets/icons/order.svg",
-                                  color: themeColor),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 3.w,
-                      ),
-                      itemDetail(),
-                      SizedBox(
-                        width: 4.w,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [themeColor, themeColorFaded],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 0.2.w, horizontal: 0.3.w),
-                            child: Icon(
-                              !isExpanded
-                                  ? Icons.keyboard_arrow_down_rounded
-                                  : Icons.keyboard_arrow_up_rounded,
-                              color: Colors.white,
-                              size: 8.w,
-                            ),
+            GestureDetector(
+              onTap: () {
+                if (widget.status.toString() == "ASSIGNED") {
+                  HomeController homeController = Get.find<HomeController>();
+
+                  //                           );
+                  Get.to(NavigationScreen(
+                      widget.order!.order.pickupLocation.coordinates[0],
+                      widget.order!.order.pickupLocation.coordinates[1],
+                      homeController.latitude.value,
+                      homeController.longitude.value,
+                      widget.order!.order.pickupLocationName,
+                      widget.order!.order.deliveryLocationName,
+                      homeController,
+                      widget.order!.order.id.toString(),
+                      widget.order!.id));
+                }
+              },
+              child: Material(
+                elevation: 6,
+                shadowColor: themeColorFaded.withOpacity(0.2),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: EdgeInsets.all(3.w),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 20.w,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 4.w,
+                                bottom: 0,
+                                top: 0,
+                                child: SvgPicture.asset(
+                                    "assets/icons/order.svg",
+                                    color: themeColor),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 3.w,
+                        ),
+                        itemDetail(),
+                        SizedBox(
+                          width: 4.w,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isExpanded = !isExpanded;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [themeColor, themeColorFaded],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0.2.w, horizontal: 0.3.w),
+                              child: Icon(
+                                !isExpanded
+                                    ? Icons.keyboard_arrow_down_rounded
+                                    : Icons.keyboard_arrow_up_rounded,
+                                color: Colors.white,
+                                size: 8.w,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
