@@ -365,7 +365,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     starttripStart(true);
 
     GraphQLClient client = graphQLConfiguration.clientToQuery();
-
+    print(id);
     QueryResult result = await client.mutate(
       MutationOptions(
         document: gql(TripStartmuatation.tripStartmuatation),
@@ -376,6 +376,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     );
 
     if (!result.hasException) {
+      print("jiji");
       starttripStart(false);
       hasstripStart(true);
 
@@ -409,6 +410,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     );
 
     if (!result.hasException) {
+      print("object");
+
       starthastripComplete(false);
       hasstripComplete(true);
 
@@ -416,6 +419,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       // stopAudio();
     } else {
+      print("object2");
       starthastripComplete(false);
       hasstripComplete(false);
 

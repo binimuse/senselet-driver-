@@ -64,15 +64,16 @@ class _OrderItemState extends State<OrderItem> {
 
                   //                           );
                   Get.to(NavigationScreen(
-                      widget.order!.order.pickupLocation.coordinates[0],
-                      widget.order!.order.pickupLocation.coordinates[1],
-                      homeController.latitude.value,
-                      homeController.longitude.value,
-                      widget.order!.order.pickupLocationName,
-                      widget.order!.order.deliveryLocationName,
-                      homeController,
-                      widget.order!.order.id.toString(),
-                      widget.order!.id));
+                    widget.order!.order.pickupLocation.coordinates[0],
+                    widget.order!.order.pickupLocation.coordinates[1],
+                    homeController.latitude.value,
+                    homeController.longitude.value,
+                    widget.order!.order.pickupLocationName,
+                    widget.order!.order.deliveryLocationName,
+                    homeController,
+                    widget.order!.id,
+                    widget.order!.order.id.toString(),
+                  ));
                 }
               },
               child: Material(
