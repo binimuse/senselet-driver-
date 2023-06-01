@@ -328,6 +328,7 @@ class HomeView extends GetView<HomeController> {
                                   if (val == true) {
                                     controller.isStatusOn(true);
                                     controller.getordersub();
+                                    print("object");
                                   } else {
                                     controller.hasorderfetchedsub(false);
                                     controller.isStatusOn(false);

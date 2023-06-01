@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:senselet_driver/app/common/widgets/custom_snack_bars.dart';
 import 'package:senselet_driver/app/routes/app_pages.dart';
 
 import '../../../../main.dart';
@@ -14,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/sahred_prefrence.dart';
+import '../../order_history/controllers/order_history_controller.dart';
 import '../data/Model/constantsmodel.dart';
 import '../data/Model/drivermodel.dart';
 import '../data/Model/orderassignmodel.dart';
@@ -196,6 +198,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   RxList<OrderAssignedHistory> orderAssignedHistory =
       List<OrderAssignedHistory>.of([]).obs;
   void getordersub() async {
+    checkifassigned();
     subscriptionDocument =
         gql(orderSubscription.getOrderSubscription(vehicleModel.first.id));
 
@@ -449,5 +452,19 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       print(result.exception);
     }
+  }
+
+  void checkifassigned() {
+    print("element.order.order_status");
+    OrderHistoryController orderHistoryController =
+        Get.put(OrderHistoryController());
+
+    Future.delayed(Duration.zero, () {
+      orderHistoryController.getOrderModel.forEach((element) {
+        if (element.order.order_status.contains("ASSIGNED")) {
+          Get.toNamed(Routes.ORDER_HISTORY);
+        }
+      });
+    });
   }
 }
