@@ -69,6 +69,26 @@ class OrderAssignedHistory {
         "vehicle_id": vehicleId,
         "order": order.toJson(),
       };
+
+  factory OrderAssignedHistory.fromMap(Map<String, dynamic> map) {
+    return OrderAssignedHistory(
+      accepted: map["accepted"],
+      acceptedAt: map["accepted_at"],
+      arrived: map["arrived"],
+      arrivedAt: map["arrived_at"],
+      canceled: map["canceled"],
+      canceledAt: map["canceled_at"],
+      id: map["id"],
+      rejected: map["rejected"],
+      rejectedAt: map["rejected_at"],
+      tripCompleted: map["trip_completed"],
+      tripCompletedAt: map["trip_completed_at"],
+      tripStarted: map["trip_started"],
+      tripStartedAt: map["trip_started_at"],
+      vehicleId: map["vehicle_id"],
+      order: Order.fromMap(map["order"]),
+    );
+  }
 }
 
 class Order {
@@ -113,6 +133,19 @@ class Order {
         "order_status": order_status,
         "pickup_location": pickupLocation.toJson(),
       };
+
+  factory Order.fromMap(Map<String, dynamic> map) {
+    return Order(
+      id: map["id"],
+      deliveryLocationName: map["delivery_location_name"],
+      deliveryLocation: Location.fromMap(map["delivery_location"]),
+      pickupLocationName: map["pickup_location_name"],
+      detail: map["detail"],
+      created_at: map["created_at"],
+      order_status: map["order_status"],
+      pickupLocation: Location.fromMap(map["pickup_location"]),
+    );
+  }
 }
 
 class Location {
@@ -135,4 +168,12 @@ class Location {
         "type": type,
         "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
       };
+
+  factory Location.fromMap(Map<String, dynamic> map) {
+    return Location(
+      type: map["type"],
+      coordinates:
+          List<double>.from(map["coordinates"].map((x) => x.toDouble())),
+    );
+  }
 }

@@ -22,14 +22,13 @@ class OrderItem extends StatefulWidget {
     this.order,
     required this.history,
     required this.controller,
-    required this.status,
     required this.index,
   }) : super(key: key);
 
   final OrderAssignedHistory? order;
 
   final bool history;
-  final String status;
+
   final int index;
 
   final OrderHistoryController controller;
@@ -59,7 +58,7 @@ class _OrderItemState extends State<OrderItem> {
           children: [
             GestureDetector(
               onTap: () {
-                if (widget.status.toString() == "ASSIGNED") {
+                if (widget.order!.order.order_status.toString() == "ASSIGNED") {
                   HomeController homeController = Get.find<HomeController>();
 
                   //                           );
@@ -366,13 +365,17 @@ class _OrderItemState extends State<OrderItem> {
                             height: 1.h,
                           ),
 
-                          widget.status == "ORDERED" ||
-                                  widget.status == "ARRIVED"
+                          widget.order!.order.order_status.toString() ==
+                                      "ORDERED" ||
+                                  widget.order!.order.order_status.toString() ==
+                                      "ARRIVED"
                               ? qrCode()
                               : const SizedBox(),
 
-                          widget.status == "ORDERED" ||
-                                  widget.status == "ARRIVED"
+                          widget.order!.order.order_status.toString() ==
+                                      "ORDERED" ||
+                                  widget.order!.order.order_status.toString() ==
+                                      "ARRIVED"
                               ? trackYourOrderButton()
                               : const SizedBox(),
 
@@ -724,9 +727,9 @@ class _OrderItemState extends State<OrderItem> {
                   width: 1.5.w,
                 ),
                 Text(
-                  widget.status.toString().contains("null")
+                  widget.order!.order.order_status.toString().contains("null")
                       ? "Pending"
-                      : widget.status.toString(),
+                      : widget.order!.order.order_status.toString(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
