@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:senselet_driver/app/common/widgets/custom_snack_bars.dart';
 import 'package:senselet_driver/app/routes/app_pages.dart';
 
 import '../../../../main.dart';

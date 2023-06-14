@@ -144,18 +144,9 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.user,
-                        title: "Profile",
+                        title: "Edit Profile",
                         onTap: () {
                           Get.toNamed(Routes.PROFILE_PAGE);
-                        }),
-                    buildRow(
-                        textcolors: Colors.grey,
-                        colors: themeColorFaded,
-                        context: context,
-                        icon: FontAwesomeIcons.clockRotateLeft,
-                        title: "History",
-                        onTap: () {
-                          Get.toNamed(Routes.ORDER_HISTORY);
                         }),
                     buildRow(
                         textcolors: Colors.grey,
@@ -183,10 +174,30 @@ class _NavDrawerState extends State<NavDrawer> {
                         context: context,
                         icon: FontAwesomeIcons.info,
                         title: "About",
-                        onTap: () {}),
+                        onTap: () {
+                          Get.toNamed(Routes.ABOUTUS);
+                        }),
                     buildRow(
                         textcolors: Colors.grey,
-                        colors: Colors.red,
+                        colors: themeColorFaded,
+                        context: context,
+                        icon: FontAwesomeIcons.shieldHalved,
+                        title: "Privacy Policy",
+                        onTap: () {
+                          Get.toNamed(Routes.PRIVACY);
+                        }),
+                    buildRow(
+                        textcolors: Colors.grey,
+                        colors: themeColorFaded,
+                        context: context,
+                        icon: FontAwesomeIcons.file,
+                        title: "Terms and Conditions",
+                        onTap: () {
+                          Get.toNamed(Routes.TERMS);
+                        }),
+                    buildRow(
+                        textcolors: Colors.grey,
+                        colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.arrowRightFromBracket,
                         title: "Logout",

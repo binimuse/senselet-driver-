@@ -102,7 +102,7 @@ class OngoingPage extends GetView<OrderHistoryController> {
 
   List _filterAssignedOrders(List orders) {
     return orders.where((order) {
-      return order["trip_started"] == null ||
+      return order["order"]["order_status"] == null ||
           order["order"]["order_status"] == "ASSIGNED";
     }).toList();
   }

@@ -117,6 +117,7 @@ class SigninController extends GetxController {
             email: email,
           ));
         } else {
+          print(result.data!["signin"]["tokens"]["access_token"]);
           await prefs.setString(Constants.userAccessTokenKey,
               result.data!["signin"]["tokens"]["access_token"]);
 
@@ -125,7 +126,7 @@ class SigninController extends GetxController {
 
           if (result.data!["signin"]["user"]["roles"]
               .toString()
-              .contains("driver")) {
+              .contains("vehicle")) {
             Get.toNamed(Routes.MAIN_PAGE);
           } else {
             ShowCommonSnackBar.awesomeSnackbarfailure(

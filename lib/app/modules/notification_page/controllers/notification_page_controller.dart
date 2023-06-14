@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,21 +34,20 @@ class NotificationPageController extends GetxController {
       List<NotificationtModel>.of([]).obs;
 
   void getNotificationbyPk() async {
-    //GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-    NotificationbypkQuery notificationbypkQuery = NotificationbypkQuery();
-    final prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString(Constants.userId);
-    // GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    try {
+      NotificationbypkQuery notificationbypkQuery = NotificationbypkQuery();
+      final prefs = await SharedPreferences.getInstance();
+      var id = prefs.getString(Constants.userId);
 
-    if (id != null) {
-      subscriptionDocument =
-          gql(notificationbypkQuery.getnotification(id.toString()));
-      loadingNotification(true);
+      if (id != null) {
+        subscriptionDocument =
+            gql(notificationbypkQuery.getnotification(id.toString()));
+        loadingNotification(true);
+      }
+    } catch (error, stackTrace) {
+      print('Error occurred: $error');
+      log('Error occurred: $error', error: error, stackTrace: stackTrace);
     }
-
-    // Stream<QueryResult> subscription = _client.subscribe(
-    //   SubscriptionOptions(document: subscriptionDocument),
-    // );
   }
 
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();

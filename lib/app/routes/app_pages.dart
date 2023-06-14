@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/aboutus/bindings/aboutus_binding.dart';
+import '../modules/aboutus/views/aboutus_view.dart';
 import '../modules/account/bindings/account_binding.dart';
 import '../modules/account/views/account_view.dart';
 import '../modules/forgotpassword/bindings/forgotpassword_binding.dart';
@@ -14,6 +16,8 @@ import '../modules/order_history/bindings/order_history_binding.dart';
 import '../modules/order_history/views/order_history_view.dart';
 import '../modules/order_page/bindings/order_page_binding.dart';
 import '../modules/order_page/views/order_page_view.dart';
+import '../modules/privacy/bindings/privacy_binding.dart';
+import '../modules/privacy/views/privacy_view.dart';
 import '../modules/profile_page/bindings/profile_page_binding.dart';
 import '../modules/profile_page/views/profile_page_view.dart';
 import '../modules/setting/bindings/setting_binding.dart';
@@ -24,6 +28,8 @@ import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/terms/bindings/terms_binding.dart';
+import '../modules/terms/views/terms_view.dart';
 
 part 'app_routes.dart';
 
@@ -65,7 +71,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFILE_PAGE,
-      page: () =>  ProfilePageView(),
+      page: () => ProfilePageView(),
       binding: ProfilePageBinding(),
     ),
     GetPage(
@@ -92,6 +98,21 @@ class AppPages {
       name: _Paths.SETTING,
       page: () => const SettingView(),
       binding: SettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.TERMS,
+      page: () => const TermsView(),
+      binding: TermsBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRIVACY,
+      page: () => const PrivacyView(),
+      binding: PrivacyBinding(),
+    ),
+    GetPage(
+      name: _Paths.ABOUTUS,
+      page: () => const AboutusView(),
+      binding: AboutusBinding(),
     ),
   ];
 }

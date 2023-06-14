@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:senselet_driver/app/modules/order_history/data/Model/cancellationreason.dart';
 
 import 'package:sizer/sizer.dart';
 
 import '../../../../constants/const.dart';
+import '../../../../constants/reusable/keyboard.dart';
 import '../../../home/controllers/home_controller.dart';
 import '../../../home/data/Model/orderassignmodel.dart';
 import '../../../home/views/widget/navigation_screen.dart';
@@ -379,6 +381,9 @@ class _OrderItemState extends State<OrderItem> {
                               ? trackYourOrderButton()
                               : const SizedBox(),
 
+                          buildcancelorder(
+                              widget.order!.order.order_status.toString()),
+
                           SizedBox(
                             height: 1.h,
                           ),
@@ -388,6 +393,131 @@ class _OrderItemState extends State<OrderItem> {
                   )
                 : const SizedBox(),
           ],
+        ),
+      ),
+    );
+  }
+
+  buildcancelorder(String orderStatus) {
+    return orderStatus == "null" || orderStatus == "ASSIGNED"
+        ? canclebutton()
+        : const SizedBox();
+  }
+
+  canclebutton() {
+    return SizedBox(
+      height: 12.h,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Center(
+              child: SizedBox(
+                width: 50.w,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [themeColor, themeColorFaded],
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        KeyboardUtil.hideKeyboard(context);
+                        _showCancelReasonsDialog();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shadowColor: themeColor,
+                        padding: EdgeInsets.symmetric(vertical: 2.3.h),
+                      ),
+                      child: Text(
+                        'Cancel order',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCancelReasonsDialog() {
+    List<Widget> reasonButtons = widget.controller.cancellationReasonModel
+        .map((reason) =>
+            _cancelReasonButton(reason, (String cancellation_reason) {
+              // Handle the button press here, using the passed id
+              print("Button pressed with id: $widget.order!.id.toString()");
+
+              widget.controller.cancelOrder(
+                  context,
+                  cancellation_reason,
+                  widget.order!.id.toString(),
+                  widget.order!.order.id.toString());
+              Get.back(); // Close the dialog
+            }))
+        .toList();
+
+    Get.defaultDialog(
+      title: 'Cancel Order',
+      content: SingleChildScrollView(
+        // Wrap the Column with SingleChildScrollView
+        child: Column(
+          children: reasonButtons,
+        ),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            Get.back(); // Close the dialog
+          },
+          icon: const Icon(Icons.close),
+          alignment: Alignment.topRight,
+        ),
+      ],
+    );
+  }
+
+  Widget _cancelReasonButton(
+      CancellationReasonModel reason, Function(String) onPressedCallback) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          vertical: 4.0, horizontal: 8.0), // update padding values
+      child: SizedBox(
+        width: 40.w,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [themeColor, themeColorFaded],
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: ElevatedButton(
+            onPressed: () {
+              onPressedCallback(
+                  reason.name); // Pass the reason.id to the callback function
+              KeyboardUtil.hideKeyboard(context);
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: EdgeInsets.symmetric(vertical: 2.0.h),
+            ),
+            child: Text(
+              reason.name,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
         ),
       ),
     );
