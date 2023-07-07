@@ -434,7 +434,9 @@ class ReusableWidget {
                       ),
                       builder: (dynamic result) {
                         if (result.hasException) {
-                          return Text(result.exception.toString());
+                          return const Center(
+                            child: SizedBox(),
+                          );
                         }
 
                         if (result.isLoading) {
