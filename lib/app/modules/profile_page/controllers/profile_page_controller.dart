@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -85,7 +84,9 @@ class ProfilePageController extends GetxController {
         hasuserFeched(true);
 //seting data to the current controller
         email.text = getUserModel.first.email;
-        phonenumber.text = getUserModel.first.phoneNumber;
+        phonenumber.text = (getUserModel.first.phoneNumber != null
+            ? getUserModel.first.phoneNumber
+            : null)!;
         first_name.text = getUserModel.first.firstName;
         last_name.text = getUserModel.first.fatherName;
         selectedGender.value = getUserModel.first.gender;

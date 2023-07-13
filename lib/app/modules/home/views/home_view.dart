@@ -405,7 +405,7 @@ class HomeView extends GetView<HomeController> {
             builder: (context, snapshot) {
               return Container(
                 width: Get.width,
-                height: 31.h,
+                height: 32.h,
                 margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 15.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -651,9 +651,9 @@ class HomeView extends GetView<HomeController> {
                                       controller
                                           .orderAssignedHistory.first.order.id,
                                       controller.orderAssignedHistory.first
-                                          .order.pickupLocation.coordinates[0],
+                                          .order.pickupLocation!.coordinates[0],
                                       controller.orderAssignedHistory.first
-                                          .order.pickupLocation.coordinates[1],
+                                          .order.pickupLocation!.coordinates[1],
                                       controller.orderAssignedHistory.first
                                           .order.pickupLocationName,
                                       controller.orderAssignedHistory.first

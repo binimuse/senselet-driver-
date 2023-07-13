@@ -2,14 +2,7 @@ class OrderSubscription {
   dynamic getOrderSubscription(String vehicleid) {
     return """
 subscription MySubscription {
-
-  order_assigned_histories(where: 
-  {rejected: {_is_null: true},
-   accepted: {_is_null: true}, 
-   trip_started: {_is_null: true}, 
- trip_completed: {_is_null: true}, 
-    vehicle_id: {_eq: "$vehicleid"}, 
-   canceled: {_is_null: true}}) {
+  order_assigned_histories(where: {rejected: {_is_null: true}, accepted: {_is_null: true}, trip_started: {_is_null: true}, trip_completed: {_is_null: true}, vehicle_id: {_eq: "$vehicleid"}, canceled: {_is_null: true}, order: {delivered: {_is_null: true}}}) {
     accepted
     accepted_at
     arrived
@@ -35,6 +28,7 @@ subscription MySubscription {
     }
   }
 }
+
 
     """;
   }

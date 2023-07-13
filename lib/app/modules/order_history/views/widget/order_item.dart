@@ -65,8 +65,8 @@ class _OrderItemState extends State<OrderItem> {
 
                   //                           );
                   Get.to(NavigationScreen(
-                    widget.order!.order.pickupLocation.coordinates[0],
-                    widget.order!.order.pickupLocation.coordinates[1],
+                    widget.order!.order.pickupLocation!.coordinates[0],
+                    widget.order!.order.pickupLocation!.coordinates[1],
                     homeController.latitude.value,
                     homeController.longitude.value,
                     widget.order!.order.pickupLocationName,
@@ -505,7 +505,7 @@ class _OrderItemState extends State<OrderItem> {
               KeyboardUtil.hideKeyboard(context);
             },
             style: ElevatedButton.styleFrom(
-              primary: Colors.transparent,
+              backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               padding: EdgeInsets.symmetric(vertical: 2.0.h),
             ),

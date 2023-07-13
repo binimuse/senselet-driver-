@@ -72,17 +72,12 @@ class _ScanQRCodepageState extends State<ScanQRCodepage> {
                           ),
                           onPressed: () async {
                             setState(() {
-                              print(result!.code);
-                              print(widget.orderHistoryId);
-
                               if (result != null) {
                                 if (result!.code
                                     .toString()
                                     .contains(widget.orderHistoryId)) {
                                   widget.homeController.packgereceived(context,
                                       widget.orderId, widget.orderHistoryId);
-
-                                      
                                 }
                               } else {
                                 ShowCommonSnackBar.awesomeSnackbarfailure(

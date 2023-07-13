@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 class OrderAssignedHistory {
   dynamic accepted;
   dynamic acceptedAt;
@@ -94,12 +96,12 @@ class OrderAssignedHistory {
 class Order {
   String id;
   String deliveryLocationName;
-  Location deliveryLocation;
+  Location? deliveryLocation;
   String pickupLocationName;
   String detail;
-  String created_at;
+  String? created_at;
   String order_status;
-  Location pickupLocation;
+  Location? pickupLocation;
 
   Order({
     required this.id,
@@ -126,24 +128,28 @@ class Order {
   Map<String, dynamic> toJson() => {
         "id": id,
         "delivery_location_name": deliveryLocationName,
-        "delivery_location": deliveryLocation.toJson(),
+        "delivery_location": deliveryLocation!.toJson(),
         "pickup_location_name": pickupLocationName,
         "detail": detail,
         "created_at": created_at,
         "order_status": order_status,
-        "pickup_location": pickupLocation.toJson(),
+        "pickup_location": pickupLocation!.toJson(),
       };
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
       id: map["id"],
       deliveryLocationName: map["delivery_location_name"],
-      deliveryLocation: Location.fromMap(map["delivery_location"]),
+      deliveryLocation: map["delivery_location"] != null
+          ? Location.fromMap(map["delivery_location"])
+          : null,
       pickupLocationName: map["pickup_location_name"],
       detail: map["detail"],
-      created_at: map["created_at"],
-      order_status: map["order_status"],
-      pickupLocation: Location.fromMap(map["pickup_location"]),
+      created_at: map["created_at"] ?? null,
+      order_status: map["order_status"] != null ? map["order_status"] : null,
+      pickupLocation: map["pickup_location"] != null
+          ? Location.fromMap(map["pickup_location"])
+          : null,
     );
   }
 }
@@ -170,10 +176,19 @@ class Location {
       };
 
   factory Location.fromMap(Map<String, dynamic> map) {
-    return Location(
-      type: map["type"],
-      coordinates:
-          List<double>.from(map["coordinates"].map((x) => x.toDouble())),
-    );
+    if (map != null) {
+      return Location(
+        type: map["type"],
+        coordinates:
+            List<double>.from(map["coordinates"].map((x) => x.toDouble())),
+      );
+    } else {
+      print('Map is null');
+      // You can return a default Location object or handle the null case appropriately
+      return Location(
+        type: 'default',
+        coordinates: [0.0, 0.0],
+      );
+    }
   }
 }

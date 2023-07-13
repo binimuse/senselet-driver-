@@ -291,12 +291,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     );
 
     if (!result.hasException) {
+      print("object");
       startcancelOrder(false);
       hasscancelOrder(true);
 
       //  hasorderfetchedsub(false);
 
-      // stopAudio();
+      hasorderfetchedsub(false);
+
+      stopAudio();
     } else {
       startcancelOrder(false);
       hasscancelOrder(false);
