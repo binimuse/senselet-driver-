@@ -65,12 +65,15 @@ class _NavDrawerState extends State<NavDrawer> {
                               ),
                             ),
                           ),
-                          Text(
-                            "Senselet Driver",
-                            style: TextStyle(
-                              color: const Color(0xff129797),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15.sp,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Senselet Driver",
+                              style: TextStyle(
+                                color: const Color(0xff129797),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15.sp,
+                              ),
                             ),
                           ),
                         ],
@@ -144,7 +147,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.user,
-                        title: "Edit Profile",
+                        title: "Edit Profile".tr,
                         onTap: () {
                           Get.toNamed(Routes.PROFILE_PAGE);
                         }),
@@ -164,7 +167,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.gear,
-                        title: "Settings",
+                        title: "Setting".tr,
                         onTap: () {
                           Get.toNamed(Routes.SETTING);
                         }),
@@ -173,7 +176,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.info,
-                        title: "About",
+                        title: "About".tr,
                         onTap: () {
                           Get.toNamed(Routes.ABOUTUS);
                         }),
@@ -182,7 +185,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.shieldHalved,
-                        title: "Privacy Policy",
+                        title: "Privacy Policy".tr,
                         onTap: () {
                           Get.toNamed(Routes.PRIVACY);
                         }),
@@ -191,7 +194,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.file,
-                        title: "Terms and Conditions",
+                        title: "Terms and Conditions".tr,
                         onTap: () {
                           Get.toNamed(Routes.TERMS);
                         }),
@@ -200,7 +203,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         colors: themeColorFaded,
                         context: context,
                         icon: FontAwesomeIcons.arrowRightFromBracket,
-                        title: "Logout",
+                        title: "Logout".tr,
                         onTap: () {
                           Get.toNamed(Routes.ACCOUNT);
                         }),

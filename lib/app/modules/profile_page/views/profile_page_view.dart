@@ -53,7 +53,7 @@ class ProfilePageView extends GetView<ProfilePageController> {
                                 suffixIcon: null,
                                 contentPadding:
                                     const EdgeInsets.only(bottom: 3),
-                                labelText: "First Name",
+                                labelText: "First Name".tr,
                                 labelStyle:
                                     const TextStyle(color: Colors.black),
                                 floatingLabelBehavior:
@@ -94,7 +94,7 @@ class ProfilePageView extends GetView<ProfilePageController> {
                                 suffixIcon: null,
                                 contentPadding:
                                     const EdgeInsets.only(bottom: 3),
-                                labelText: "Last Name",
+                                labelText: "Last Name".tr,
                                 labelStyle:
                                     const TextStyle(color: Colors.black),
                                 floatingLabelBehavior:
@@ -132,7 +132,7 @@ class ProfilePageView extends GetView<ProfilePageController> {
                                 suffixIcon: null,
                                 contentPadding:
                                     const EdgeInsets.only(bottom: 3),
-                                labelText: "Email",
+                                labelText: "Email".tr,
                                 labelStyle:
                                     const TextStyle(color: Colors.black),
                                 floatingLabelBehavior:
@@ -173,7 +173,7 @@ class ProfilePageView extends GetView<ProfilePageController> {
                                 suffixIcon: null,
                                 contentPadding:
                                     const EdgeInsets.only(bottom: 3),
-                                labelText: "Phone",
+                                labelText: "Phone".tr,
                                 labelStyle:
                                     const TextStyle(color: Colors.black),
                                 floatingLabelBehavior:
@@ -437,7 +437,6 @@ class ProfilePageView extends GetView<ProfilePageController> {
           );
         });
   }
-
 
   DateTime selectedDate = DateTime.now();
   String? formattedDates;

@@ -33,16 +33,17 @@ class MainTranslations extends Translations {
           "Home": "Home",
           "Profile": "Profile",
           "Order": "Order",
-          //PROFILE
+          //Nav
           "Edit Profile": "Edit Profile",
           "Change language": "Change language",
           "Delivery Address": "Delivery Address",
           "Privacy Policy": "Privacy Policy",
-          "Account Setting": "Account Setting",
-          "About us": "About us",
+          "Terms and Conditions": "Terms and Conditions",
+          "Setting": "Setting",
+          "About": "About",
           "FAQ": "FAQ",
           "Contact": "Contact",
-          "Log out": "Log out",
+          "Logout": "Log out",
           // ORDER
           "To send":
               "To send your package, you can pick a location, set a drop-off point, add a detailed description of the substance you are sending, and select a vehicle that can hold it all the way to your destination. Simply follow the instructions on the screen to get started. If you have any questions, do not hesitate to contact our support team for assistance.",
@@ -51,6 +52,11 @@ class MainTranslations extends Translations {
           "Dropoff location": "Dropoff location",
           "Select Vehicle": "Select Vehicle",
           "Select Vehicle type": "Select Vehicle type",
+
+          //Edit profile
+          "First Name": "First Name",
+          "Email": "Email",
+          "Email": "Email",
         },
 
         //Amharic
@@ -87,16 +93,18 @@ class MainTranslations extends Translations {
           "Home": "ዋናው ገፅ",
           "Profile": "ፕሮፋይል",
           "Order": "ለማዘዝ",
-          //PROFILE
+          //Nav
           "Edit Profile": "ፕሮፋይል አስተካክል",
           "Change language": "ቋንቋ ቀይር",
           "Delivery Address": "አስገቡ አድራሻ",
-          "Privacy Policy": "ደረጃ መረጃ ፖሊስዎር",
-          "Account Setting": "መለያ ማስተካከል",
-          "About us": "ስለ እኛ",
+          "Privacy Policy": " መረጃ ፖሊስ",
+          "Terms and Conditions": "አተገባበሩና ​​መመሪያው",
+
+          "Setting": "መለያ ማስተካከል",
+          "About": "ስለ እኛ",
           "FAQ": "የጥያቄ ጊዜያዊ ጥያቄዎች",
           "Contact": "ያግኙን",
-          "Log out": "ውጣ",
+          "Logout": "ውጣ",
           // ORDER
           "To send":
               "ጥቅልዎን ለመላክ ቦታ መምረጥ፣ መወርወሪያ ቦታ ማዘጋጀት፣ የሚልኩትን ንጥረ ነገር ዝርዝር መግለጫ ማከል እና መድረሻዎ ድረስ የሚይዘውን ተሽከርካሪ መምረጥ ይችላሉ። ለመጀመር በቀላሉ በማያ ገጹ ላይ ያሉትን መመሪያዎች ይከተሉ። ማንኛውም አይነት ጥያቄ ካሎት ለእርዳታ የድጋፍ ቡድናችንን ለማነጋገር አያመንቱ።",
