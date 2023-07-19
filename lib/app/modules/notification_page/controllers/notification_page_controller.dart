@@ -53,7 +53,7 @@ class NotificationPageController extends GetxController {
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   updatenotificationstatus() async {
     final prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString('id');
+    var id = prefs.getString(Constants.userId);
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client.mutate(
       MutationOptions(

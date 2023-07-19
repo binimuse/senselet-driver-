@@ -121,7 +121,7 @@ class Order {
         pickupLocationName: json["pickup_location_name"],
         detail: json["detail"],
         created_at: json["created_at"],
-        order_status: json["order_status"],
+        order_status: json["order_status"] ?? "",
         pickupLocation: Location.fromJson(json["pickup_location"]),
       );
 
