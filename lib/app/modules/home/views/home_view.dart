@@ -6,10 +6,12 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:senselet_driver/app/modules/home/views/widget/nav_drawer.dart';
+import 'package:senselet_driver/app/routes/app_pages.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../constants/const.dart';
 import '../../../theme/custom_sizes.dart';
+import '../../account/controllers/account_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -37,9 +39,19 @@ class HomeView extends GetView<HomeController> {
                           ),
                           builder: (dynamic result) {
                             if (result.hasException) {
-                              return Text(result.exception.toString());
+                              LinkException linkException =
+                                  result.exception?.linkException;
+                              if (linkException is UnknownException &&
+                                  linkException.message
+                                      .contains('JWTExpired')) {
+                                final AccountController accountController =
+                                    Get.put(AccountController());
+                                accountController.logout();
+                                return SizedBox();
+                              } else {
+                                return Text(result.exception.toString());
+                              }
                             }
-
                             if (result.isLoading) {
                               return const Center(
                                 child: CircularProgressIndicator(),

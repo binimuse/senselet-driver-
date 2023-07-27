@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:sizer/sizer.dart';
 
+import '../../modules/account/controllers/account_controller.dart';
 import '../../modules/notification_page/controllers/notification_page_controller.dart';
 import '../../routes/app_pages.dart';
 import '../const.dart';
@@ -434,9 +435,17 @@ class ReusableWidget {
                       ),
                       builder: (dynamic result) {
                         if (result.hasException) {
-                          return const Center(
-                            child: SizedBox(),
-                          );
+                          LinkException linkException =
+                              result.exception?.linkException;
+                          if (linkException is UnknownException &&
+                              linkException.message.contains('JWTExpired')) {
+                            final AccountController accountController =
+                                Get.put(AccountController());
+                            accountController.logout();
+                            return SizedBox();
+                          } else {
+                            return Text(result.exception.toString());
+                          }
                         }
 
                         if (result.isLoading) {

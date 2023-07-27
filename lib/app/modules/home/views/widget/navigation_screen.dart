@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
 import 'package:senselet_driver/app/modules/home/views/widget/qrscanner.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 
+import '../../../../../main.dart';
 import '../../../../constants/const.dart';
 import '../../controllers/home_controller.dart';
+import '../../data/muation&query/addlocationmutation.dart';
 
 class NavigationScreen extends StatefulWidget {
   final double orderlat;
@@ -67,6 +70,52 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.dispose();
   }
 
+  Location locationtohausra = new Location();
+  late bool serviceEnabled;
+  late PermissionStatus permissionGranted;
+  late LocationData _locationData;
+  late Stream<LocationData> _locationStream;
+  void initLocation() async {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    _locationStream = location.onLocationChanged;
+    _locationStream.listen((LocationData currentLocation) {
+      sendLocationToHasura(currentLocation);
+    });
+  }
+
+  void sendLocationToHasura(LocationData currentLocation) async {
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+    final MutationOptions options = MutationOptions(
+      document: gql(AddLocationMutation.addLocationMutation),
+      variables: {
+        "lat": currentLocation.latitude,
+        "lng": currentLocation.longitude,
+      },
+    );
+
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      print(result.exception.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,15 +150,63 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     },
                   ),
                   Positioned(
+                    bottom: 95,
+                    right: 10,
+                    left: 10,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                offset: const Offset(0, 1),
+                                blurRadius: 6,
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(90),
+                            gradient: const LinearGradient(
+                              colors: [Colors.red, Colors.red],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                FloatingActionButton(
+                                  heroTag: "phone",
+                                  elevation: 0,
+                                  onPressed: () {},
+                                  backgroundColor: Colors.transparent,
+                                  child: Text(
+                                    'SOS',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
                     bottom: 10,
                     right: 10,
                     left: 10,
                     child: ConfirmationSlider(
-                      iconColor: !deliveryStarted ? themeColor : Colors.red,
+                      iconColor: !deliveryStarted ? themeColor : Colors.yellow,
                       foregroundColor:
-                          !deliveryStarted ? themeColor : Colors.red,
+                          !deliveryStarted ? themeColor : Colors.yellow,
                       backgroundColorEnd:
-                          !deliveryStarted ? themeColor : Colors.red,
+                          !deliveryStarted ? themeColor : Colors.yellow,
                       text: deliveryStarted
                           ? 'Finish delivery'
                           : 'Slide to start trip',
@@ -119,29 +216,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           widget.homeController
                               .tripStart(context, widget.orderId);
                           if (!showqr) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                  elevation: 8.0,
-                                  content: Text('Have A Nice Journey'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        showqr = true;
-
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Ok'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            showqr = true;
+                            initLocation();
                           } else {
                             showDialog(
                               context: context,
