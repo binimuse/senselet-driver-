@@ -2,19 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
 import 'package:senselet_driver/app/modules/home/views/widget/qrscanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 
 import '../../../../../main.dart';
+import '../../../../common/widgets/custom_snack_bars.dart';
 import '../../../../constants/const.dart';
+import '../../../../utils/constants.dart';
+import '../../../../utils/sahred_prefrence.dart';
 import '../../controllers/home_controller.dart';
 import '../../data/muation&query/addlocationmutation.dart';
+import '../../data/muation&query/sos.dart';
 
 class NavigationScreen extends StatefulWidget {
   final double orderlat;
@@ -56,7 +62,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   StreamSubscription<loc.LocationData>? locationSubscription;
   bool deliveryStarted = false;
   bool showqr = false;
-
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -67,6 +73,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void dispose() {
     locationSubscription?.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -100,12 +107,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   void sendLocationToHasura(LocationData currentLocation) async {
+    final prefs = await SharedPreferences.getInstance();
+
     GraphQLClient client = graphQLConfiguration.clientToQuery();
     final MutationOptions options = MutationOptions(
       document: gql(AddLocationMutation.addLocationMutation),
       variables: {
-        "lat": currentLocation.latitude,
-        "lng": currentLocation.longitude,
+        'location': {
+          "type": "Point",
+          "coordinates": [currentLocation.latitude, currentLocation.longitude]
+        },
+        'vehicle_id': prefs.getString(Constants.vehiclesId),
       },
     );
 
@@ -113,6 +125,39 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     if (result.hasException) {
       print(result.exception.toString());
+    }
+  }
+
+  bool startSOS = false;
+  sos() async {
+    setState(() {
+      startSOS = true;
+    });
+
+    GraphQLClient client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(SOSMuatation.SOSmuatation),
+        variables: <String, dynamic>{
+          // 'credential_id': PreferenceUtils.getString(Constants.userId),
+        },
+      ),
+    );
+
+    if (!result.hasException) {
+      setState(() {
+        startSOS = false;
+      });
+
+      ShowCommonSnackBar.awesomeSnackbarSucess("Success", "SOS Sent", context);
+      // Get.to(OrderSuccessView());
+    } else {
+      setState(() {
+        startSOS = false;
+      });
+
+      print(result.exception);
     }
   }
 
@@ -178,18 +223,25 @@ class _NavigationScreenState extends State<NavigationScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                FloatingActionButton(
-                                  heroTag: "phone",
-                                  elevation: 0,
-                                  onPressed: () {},
-                                  backgroundColor: Colors.transparent,
-                                  child: Text(
-                                    'SOS',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                startSOS
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ))
+                                    : FloatingActionButton(
+                                        heroTag: "phone",
+                                        elevation: 0,
+                                        onPressed: () {
+                                          sos();
+                                        },
+                                        backgroundColor: Colors.transparent,
+                                        child: Text(
+                                          'SOS',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -217,7 +269,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
                               .tripStart(context, widget.orderId);
                           if (!showqr) {
                             showqr = true;
-                            initLocation();
+                            initLocation(); // Call the function immediately
+                            timer = Timer.periodic(Duration(seconds: 300),
+                                (Timer t) => initLocation());
                           } else {
                             showDialog(
                               context: context,

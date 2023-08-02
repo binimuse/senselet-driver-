@@ -24,6 +24,7 @@ import '../data/muation&query/cancelorder.dart';
 import '../data/muation&query/order_history_query_mutation.dart';
 import '../data/muation&query/order_sub.dart';
 import '../data/muation&query/packgerecived.dart';
+import '../data/muation&query/sos.dart';
 import '../data/muation&query/tripcomplete.dart';
 import '../data/muation&query/tripstart.dart';
 import '../data/muation&query/updatevechle.dart';
